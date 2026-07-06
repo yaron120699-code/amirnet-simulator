@@ -1,5 +1,5 @@
 window.PREPLAB_BLUEPRINT = {
-  version: "v0.7 Adaptive Blueprint",
+  version: "v0.9.5 Adaptive Blueprint",
   examName: "Amirnet Simulation",
   scoreRange: { min: 50, max: 150 },
   timing: {
@@ -10,12 +10,11 @@ window.PREPLAB_BLUEPRINT = {
     startAbility: 3.0,
     minAbility: 1,
     maxAbility: 5,
-    correctStep: 0.35,
-    wrongStep: 0.45,
-    unansweredPenalty: 0.2,
-    exactMatchWeight: 0.72,
-    adjacentMatchWeight: 0.22,
-    randomWeight: 0.06
+    // Logistic (Elo/IRT-style) update:
+    // delta = K * (actual - expected), expected = 1/(1+e^(difficulty-ability))
+    kStart: 0.55,     // initial step size — how fast the exam "finds" the user
+    kHalfLife: 10,    // after this many questions, K is halved (stabilizes)
+    skipFactor: 0.35  // skipped question costs K * skipFactor
   },
   sectionTemplates: {
     full: {

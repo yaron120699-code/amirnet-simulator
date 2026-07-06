@@ -1,8 +1,14 @@
 window.PrepLabScoring = (() => {
   const clamp = (score) => Math.max(50, Math.min(150, Math.round(score)));
 
-  function calculate(items, answers, abilityHistory, blueprint) {
-    const total = items.length;
+  // plannedTotal is optional (backward compatible). When the timer ends
+  // before all planned questions were presented, the missing slots count
+  // as unanswered at average difficulty (3) — like the real exam.
+  function calculate(items, answers, abilityHistory, blueprint, plannedTotal) {
+    const presented = items.length;
+    const total = Math.max(plannedTotal || presented, presented);
+    const missing = total - presented;
+
     const answered = answers.filter(a => a !== null && a !== undefined).length;
     const correct = items.reduce((sum, item, index) => sum + (answers[index] === item.answer ? 1 : 0), 0);
     const unanswered = total - answered;
@@ -11,7 +17,7 @@ window.PrepLabScoring = (() => {
       return { score: 50, low: 50, high: 50, confidence: "Very Low", correct, total, answered, unanswered, accuracy: 0 };
     }
 
-    const weightedPossible = items.reduce((sum, item) => sum + item.difficulty, 0);
+    const weightedPossible = items.reduce((sum, item) => sum + item.difficulty, 0) + missing * 3;
     const weightedCorrect = items.reduce((sum, item, index) => sum + (answers[index] === item.answer ? item.difficulty : 0), 0);
     const weightedAccuracy = weightedPossible ? weightedCorrect / weightedPossible : 0;
     const rawAccuracy = correct / total;

@@ -1,8 +1,8 @@
 const app = document.getElementById("app");
 const blueprint = window.PREPLAB_BLUEPRINT;
 const bank = window.PREPLAB_QUESTIONS;
-document.getElementById("versionBadge").textContent = "v0.9.3 Public Beta";
-document.getElementById("footerVersion").textContent = "v0.9.3 Public Beta";
+document.getElementById("versionBadge").textContent = "v0.9.5 Public Beta";
+document.getElementById("footerVersion").textContent = "v0.9.5 Public Beta";
 
 const I18N = {
   en: {
@@ -25,7 +25,7 @@ const I18N = {
     difficulty: "Difficulty",
     currentAbility: "Current ability",
     back: "Back",
-    skip: "Skip",
+    noBack: "You cannot return to previous questions during the simulation, similar to the real Amirnet exam.",
     next: "Next",
     submit: "Submit",
     estimatedScore: "Estimated Amirnet Score",
@@ -75,6 +75,7 @@ const I18N = {
     difficulty: "רמת קושי",
     currentAbility: "רמת יכולת נוכחית",
     back: "חזרה",
+    noBack: "לא ניתן לחזור לשאלות קודמות במהלך הסימולציה, בדומה למבחן האמירנט האמיתי.",
     skip: "דלג",
     next: "הבא",
     submit: "הגש",
@@ -110,6 +111,8 @@ const I18N = {
 let state = {
   mode: null,
   untimed: false,
+  session: null,
+  processedCount: 0,
   items: [],
   answers: [],
   index: 0,
@@ -197,18 +200,28 @@ function renderHome() {
 function startExam(mode) {
   state.mode = mode;
   state.untimed = document.getElementById("untimed")?.checked || false;
-  state.items = PrepLabAdaptiveEngine.buildExam(mode, blueprint, bank, getRecentQuestionIds());
-  state.answers = Array(state.items.length).fill(null);
+  state.session = PrepLabAdaptiveEngine.createSession(mode, blueprint, bank, getRecentQuestionIds());
+  state.items = [];
+  state.answers = [];
   state.index = 0;
+  state.processedCount = 0;
   state.ability = blueprint.adaptive.startAbility;
   state.abilityHistory = [state.ability];
   state.startedAt = Date.now();
+  const first = state.session.next(state.ability);
+  if (!first) { renderHome(); return; }
+  state.items.push(first);
+  state.answers.push(null);
   state.secondsLeft = (mode === "full" ? blueprint.timing.fullMinutes : blueprint.timing.quickMinutes) * 60;
   if (!state.untimed) {
     state.timer = setInterval(() => {
       state.secondsLeft--;
-      if (state.secondsLeft <= 0) finishExam();
-      else renderExam();
+      if (state.secondsLeft <= 0) { finishExam(); return; }
+      const timerEl = document.getElementById("timerValue");
+      if (timerEl) {
+        timerEl.textContent = formatTime(state.secondsLeft);
+        timerEl.classList.toggle("time-low", state.secondsLeft <= 300);
+      }
     }, 1000);
   }
   renderExam();
@@ -226,13 +239,14 @@ function labelType(type) {
 
 function renderExam() {
   const item = state.items[state.index];
-  const progress = ((state.index + 1) / state.items.length) * 100;
+  const plannedTotal = state.session ? state.session.plannedTotal : state.items.length;
+  const progress = ((state.index + 1) / plannedTotal) * 100;
   const selected = state.answers[state.index];
   app.innerHTML = `
     <section class="card exam-card">
       <div class="exam-head">
-        <div>${t("question")} ${state.index + 1} / ${state.items.length}</div>
-        <div>${state.untimed ? t("untimedShort") : formatTime(state.secondsLeft)}</div>
+        <div>${t("question")} ${state.index + 1} / ${plannedTotal}</div>
+        <div id="timerValue" class="exam-timer ${!state.untimed && state.secondsLeft <= 300 ? "time-low" : ""}">${state.untimed ? t("untimedShort") : formatTime(state.secondsLeft)}</div>
       </div>
       <div class="progress"><span style="width:${progress}%"></span></div>
       <div class="question-meta">
@@ -244,13 +258,13 @@ function renderExam() {
       ${item.passage ? `<div class="passage english-content"><strong>${item.passageTitle}</strong><br><br>${item.passage}</div>` : ""}
       <div class="question-text english-content">${item.question}</div>
       <div class="options english-content">
-        ${item.options.map((opt, i) => `<button class="option ${selected === i ? "selected" : ""}" onclick="choose(${i})">${i + 1}. ${opt}</button>`).join("")}
+        ${item.options.map((opt, i) => `<button class="option ${selected === i ? "selected" : ""}" onclick="choose(${i})"><span class="option-num">${i + 1}</span><span>${opt}</span></button>`).join("")}
       </div>
       <div class="nav">
-        <button class="secondary" onclick="prevQuestion()" ${state.index === 0 ? "disabled" : ""}>${t("back")}</button>
+        <span class="no-back-note">${t("noBack")}</span>
         <div class="actions" style="margin:0">
           <button class="secondary" onclick="skipQuestion()">${t("skip")}</button>
-          ${state.index === state.items.length - 1 ? `<button onclick="finishExam()">${t("submit")}</button>` : `<button onclick="nextQuestion()">${t("next")}</button>`}
+          ${state.index + 1 >= plannedTotal ? `<button onclick="finishExam()">${t("submit")}</button>` : `<button onclick="nextQuestion()">${t("next")}</button>`}
         </div>
       </div>
     </section>`;
@@ -258,26 +272,36 @@ function renderExam() {
 
 function choose(optionIndex) { state.answers[state.index] = optionIndex; renderExam(); }
 function skipQuestion() { state.answers[state.index] = null; nextQuestion(); }
-function prevQuestion() { if (state.index > 0) { state.index--; renderExam(); } }
-function nextQuestion() {
+
+// Locks the current question: ability updates exactly once per question.
+function lockCurrentQuestion() {
+  if (state.processedCount > state.index) return;
   const item = state.items[state.index];
   const answer = state.answers[state.index];
   const wasAnswered = answer !== null && answer !== undefined;
   const isCorrect = answer === item.answer;
-  state.ability = PrepLabAdaptiveEngine.updateAbility(state.ability, isCorrect, wasAnswered, item, blueprint);
+  state.ability = PrepLabAdaptiveEngine.updateAbility(
+    state.ability, isCorrect, wasAnswered, item, blueprint, state.processedCount
+  );
   state.abilityHistory.push(state.ability);
-  if (state.index < state.items.length - 1) { state.index++; renderExam(); }
+  state.processedCount++;
+}
+
+function nextQuestion() {
+  lockCurrentQuestion();
+  const nextItem = state.session.next(state.ability);
+  if (!nextItem) { finishExam(); return; }
+  state.items.push(nextItem);
+  state.answers.push(null);
+  state.index++;
+  renderExam();
 }
 
 function finishExam(keepScreen = false) {
   clearInterval(state.timer);
-  for (let i = state.abilityHistory.length - 1; i < state.items.length; i++) {
-    const item = state.items[i];
-    const ans = state.answers[i];
-    state.ability = PrepLabAdaptiveEngine.updateAbility(state.ability, ans === item.answer, ans !== null && ans !== undefined, item, blueprint);
-    state.abilityHistory.push(state.ability);
-  }
-  const result = PrepLabScoring.calculate(state.items, state.answers, state.abilityHistory, blueprint);
+  if (state.items.length && state.processedCount <= state.index) lockCurrentQuestion();
+  const plannedTotal = state.session ? state.session.plannedTotal : state.items.length;
+  const result = PrepLabScoring.calculate(state.items, state.answers, state.abilityHistory, blueprint, plannedTotal);
   saveRecentQuestionIds(state.items);
   renderResults(result);
 }
