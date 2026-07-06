@@ -1,8 +1,8 @@
 const app = document.getElementById("app");
 const blueprint = window.PREPLAB_BLUEPRINT;
 const bank = window.PREPLAB_QUESTIONS;
-document.getElementById("versionBadge").textContent = "v0.9.5 Public Beta";
-document.getElementById("footerVersion").textContent = "v0.9.5 Public Beta";
+document.getElementById("versionBadge").textContent = "v0.9.6 Public Beta";
+document.getElementById("footerVersion").textContent = "v0.9.6 Public Beta";
 
 const I18N = {
   en: {
@@ -205,6 +205,7 @@ function startExam(mode) {
   state.answers = [];
   state.index = 0;
   state.processedCount = 0;
+  state.telemetryLogged = false;
   state.ability = blueprint.adaptive.startAbility;
   state.abilityHistory = [state.ability];
   state.startedAt = Date.now();
@@ -303,6 +304,21 @@ function finishExam(keepScreen = false) {
   const plannedTotal = state.session ? state.session.plannedTotal : state.items.length;
   const result = PrepLabScoring.calculate(state.items, state.answers, state.abilityHistory, blueprint, plannedTotal);
   saveRecentQuestionIds(state.items);
+  // Calibration telemetry (anonymous, local). Guarded so a language
+  // switch on the results screen never double-counts, and wrapped so
+  // telemetry can never break the exam flow.
+  if (window.PrepLabTelemetry && !state.telemetryLogged) {
+    try {
+      PrepLabTelemetry.recordSimulation({
+        items: state.items,
+        answers: state.answers,
+        abilityHistory: state.abilityHistory,
+        result,
+        mode: state.mode
+      });
+    } catch (e) {}
+    state.telemetryLogged = true;
+  }
   renderResults(result);
 }
 

@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Calibration · PrepLab Internal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    .cal-summary { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin:16px 0 24px; }
+    table.cal { width:100%; border-collapse:collapse; font-size:13px; }
+    table.cal th, table.cal td { text-align:left; padding:9px 10px; border-bottom:1px solid var(--line); white-space:nowrap; }
+    table.cal th { color:var(--ink-soft); font-weight:600; font-size:12px; position:sticky; top:0; background:var(--card); }
+    table.cal td { font-variant-numeric:tabular-nums; }
+    .table-wrap { max-height:520px; overflow:auto; border:1px solid var(--line); border-radius:var(--r-md); }
+    .flag { display:inline-block; padding:2px 8px; border-radius:999px; font-size:11px; font-weight:600; margin-right:4px; }
+    .flag.too-easy { background:#FBF3E5; color:var(--warn); }
+    .flag.too-hard { background:var(--bad-soft); color:var(--bad); }
+    .flag.poor-discriminator { background:#EFEAF7; color:#6B4FA3; }
+    .flag.overused { background:var(--card-soft); color:var(--ink-soft); border:1px solid var(--line-strong); }
+    .rec-ok { color:var(--good); font-weight:600; }
+    .rec-warn { color:var(--warn); font-weight:600; }
+    .rec-none { color:var(--ink-faint); }
+    .sim-block { border:1px solid var(--line); border-radius:var(--r-md); padding:16px 18px; margin-bottom:12px; background:var(--card); }
+    .path-chip { display:inline-block; background:var(--card-soft); border:1px solid var(--line); border-radius:var(--r-sm); padding:2px 8px; margin:2px; font-size:12px; font-variant-numeric:tabular-nums; }
+    .cal-tools { display:flex; gap:10px; flex-wrap:wrap; margin:12px 0 20px; }
+    .filter-row { display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap; }
+    .empty { color:var(--ink-faint); padding:24px; text-align:center; }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="index.html" aria-label="PrepLab home">
+        <span class="brand-mark">P</span>
+        <span>
+          <span class="eyebrow">PrepLab · Internal</span>
+          <strong>Calibration Dashboard</strong>
+        </span>
+      </a>
+      <div class="top-actions">
+        <a class="ghost-link" href="index.html">← Simulator</a>
+        <div class="version">v0.9.6</div>
+      </div>
+    </header>
+
+    <main>
+      <section class="card">
+        <div class="eyebrow">Developer only · data from this browser</div>
+        <h2 style="font-size:30px">Question Calibration</h2>
+        <p class="muted-note">
+          Anonymous local statistics. Until a backend exists, this page shows data
+          collected on this device only. Use Export to collect JSON files from
+          multiple devices — the aggregate format merges by simple addition.
+        </p>
+
+        <div class="cal-summary" id="summary"></div>
+
+        <div class="cal-tools">
+          <button class="secondary" onclick="renderAll()">Refresh</button>
+          <button class="secondary" onclick="PrepLabTelemetry.exportJSON()">Export JSON</button>
+          <button class="secondary" onclick="if(confirm('Delete all local telemetry?')){PrepLabTelemetry.reset();renderAll();}">Reset data</button>
+        </div>
+
+        <div class="filter-row">
+          <button class="secondary" data-filter="all" onclick="setFilter('all')">All</button>
+          <button class="secondary" data-filter="flagged" onclick="setFilter('flagged')">Flagged only</button>
+        </div>
+
+        <div class="table-wrap">
+          <table class="cal">
+            <thead>
+              <tr>
+                <th>ID</th><th>Type</th><th>Declared</th><th>Exposure</th>
+                <th>Success</th><th>Avg ability</th><th>Solver avg</th><th>Fail avg</th>
+                <th>Discrim.</th><th>Flags</th><th>Recommendation</th>
+              </tr>
+            </thead>
+            <tbody id="qtable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card" style="margin-top:20px">
+        <div class="eyebrow">Adaptive diagnostics</div>
+        <h3 style="margin-top:8px">Recent simulations</h3>
+        <div id="sims"></div>
+      </section>
+    </main>
+
+    <footer>
+      <span>Internal calibration tools · not linked publicly</span>
+      <span>v0.9.6</span>
+    </footer>
+  </div>
+
+  <script src="questions/questionBank.js"></script>
+  <script src="js/telemetry.js"></script>
+  <script>
+    let filter = "all";
+    function setFilter(f) { filter = f; renderAll(); }
+
+    function recClass(rec) {
+      if (rec === "Looks calibrated") return "rec-ok";
+      if (rec === "Not enough data") return "rec-none";
+      return "rec-warn";
+    }
+
+    function renderAll() {
+      const rep = PrepLabTelemetry.report(window.PREPLAB_QUESTIONS);
+
+      document.getElementById("summary").innerHTML = `
+        <div class="stat">Simulations<strong>${rep.totals.simulations}</strong></div>
+        <div class="stat">Questions with data<strong>${rep.totals.questionsWithData}</strong></div>
+        <div class="stat">Median exposure<strong>${rep.totals.medianExposure}</strong></div>
+        <div class="stat">Flagged<strong>${rep.rows.filter(r => r.flags.length).length}</strong></div>`;
+
+      const rows = rep.rows.filter(r => filter === "all" || r.flags.length);
+      document.getElementById("qtable").innerHTML = rows.length ? rows.map(r => `
+        <tr>
+          <td><strong>${r.id}</strong></td>
+          <td>${r.type || "—"}</td>
+          <td>${r.declaredDifficulty ?? "—"}/5</td>
+          <td>${r.exposure}</td>
+          <td>${r.difficultyIndex != null ? Math.round(r.difficultyIndex * 100) + "%" : "—"}</td>
+          <td>${r.avgAbility ?? "—"}</td>
+          <td>${r.avgSolverScore ?? "—"}</td>
+          <td>${r.avgFailScore ?? "—"}</td>
+          <td>${r.discrimination ?? "—"}</td>
+          <td>${r.flags.map(f => `<span class="flag ${f}">${f}</span>`).join("") || "—"}</td>
+          <td class="${recClass(r.recommendation)}">${r.recommendation}</td>
+        </tr>`).join("") :
+        `<tr><td colspan="11" class="empty">No data yet — complete a few simulations first.</td></tr>`;
+
+      const sims = PrepLabTelemetry.lastSimulations(5);
+      document.getElementById("sims").innerHTML = sims.length ? sims.map(s => `
+        <div class="sim-block">
+          <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px">
+            <strong>${new Date(s.at).toLocaleString()} · ${s.mode || "?"}</strong>
+            <span>Score <strong>${s.score}</strong> (${s.low}–${s.high}, ${s.confidence})</span>
+          </div>
+          <div style="margin-bottom:8px"><span style="color:var(--ink-faint);font-size:12px">Ability path:</span><br>
+            ${s.abilityPath.map(a => `<span class="path-chip">${a}</span>`).join("→")}
+          </div>
+          <div style="color:var(--ink-faint);font-size:12px;margin-bottom:4px">Questions served (difficulty · expected success · outcome):</div>
+          <div>${s.questions.map(q =>
+            `<span class="path-chip" title="${q.id}">${q.difficulty} · ${q.expectedSuccess}% · ${q.outcome === "correct" ? "✓" : q.outcome === "wrong" ? "✗" : "–"}</span>`
+          ).join("")}</div>
+        </div>`).join("") :
+        `<div class="empty">No simulations recorded yet.</div>`;
+    }
+
+    renderAll();
+  </script>
+</body>
+</html>

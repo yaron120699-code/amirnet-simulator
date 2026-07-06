@@ -63,6 +63,12 @@ window.PrepLabAdaptiveEngine = (() => {
     return {
       ...withShuffledOptions(q),
       type,
+      // Metadata defaults (Part 1) — full schema without editing the bank:
+      topic: q.topic || "general",
+      subtopic: q.subtopic || null,
+      tags: Array.isArray(q.tags) ? q.tags : [],
+      version: q.version || 1,
+      createdAt: q.createdAt || null,
       passageTitle: passage?.title || null,
       passage: passage?.passage || null,
       parentPassageId: passage?.id || null
