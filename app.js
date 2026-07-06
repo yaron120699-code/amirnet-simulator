@@ -25,6 +25,7 @@ const state = {
 };
 
 function clamp(n,min,max){ return Math.max(min, Math.min(max,n)); }
+function clampScore(score){ return clamp(Math.round(Number(score) || 50), 50, 150); }
 function shuffle(arr){ return [...arr].sort(()=>Math.random()-.5); }
 function normalizeDifficulty(q){
   // Older question banks may have numeric difficulty stored under skill.
@@ -55,7 +56,7 @@ function home(){
 <div class="wrap">
   <section class="hero">
     <div class="card">
-      <div class="brand"><div class="logo">A</div><span>AMIRNET SIM v0.5</span></div>
+      <div class="brand"><div class="logo">A</div><span>AMIRNET SIM v0.6.1</span></div>
       <h1>גרסת התנסות ראשונית לחברים.</h1>
       <p class="lead">סימולציה באנגלית לפי מבנה פרק: השלמת משפטים, ניסוח מחדש, ושני אנסינים שמשתקללים בציון. המנוע אדפטיבי והציון הוא אומדן 50–150.</p>
       <div class="actions">
@@ -282,14 +283,32 @@ function calc(){
     byLevel[q.level] ||= {ok:0,total:0}; byLevel[q.level].total++; if(ok) byLevel[q.level].ok++;
   });
   const weighted = totalW ? gotW/totalW : 0;
-  const avgAbility = state.abilityHistory.reduce((a,b)=>a+b,0)/state.abilityHistory.length;
-  const finalAbilityNorm = (state.ability - 1) / 4;
-  const avgAbilityNorm = (avgAbility - 1) / 4;
-  let score = Math.round(50 + (weighted*0.55 + finalAbilityNorm*0.30 + avgAbilityNorm*0.15) * 100);
   const unanswered = state.questions.filter(q=>state.answers[q.id]===undefined).length;
-  score = clamp(score - Math.round((unanswered/state.questions.length)*10), 50, 150);
+  const answered = state.questions.length - unanswered;
+
+  // Empty submit guard: if the user did not answer anything, the score must be the floor.
+  // Unanswered questions are counted as wrong everywhere, not ignored.
+  const avgAbility = state.abilityHistory.reduce((a,b)=>a+b,0)/state.abilityHistory.length;
+  let score;
+  if(answered === 0){
+    score = clampScore(50);
+  } else {
+    const finalAbilityNorm = (state.ability - 1) / 4;
+    const avgAbilityNorm = (avgAbility - 1) / 4;
+    score = Math.round(50 + (weighted*0.55 + finalAbilityNorm*0.30 + avgAbilityNorm*0.15) * 100);
+    score = clampScore(score - Math.round((unanswered/state.questions.length)*18));
+  }
+
   const acc = Math.round((correct/state.questions.length)*100);
-  return {score, correct, acc, weighted:Math.round(weighted*100), byType, byLevel, unanswered, finalAbility:state.ability.toFixed(1), avgAbility:avgAbility.toFixed(1)};
+  let margin = 4;
+  if(state.questions.length < 27) margin = 8;
+  if(unanswered/state.questions.length > 0.25) margin = 12;
+  if(answered === 0) margin = 0;
+  const confidence = answered === 0 ? 'לא רלוונטי' : margin <= 4 ? 'גבוהה' : margin <= 8 ? 'בינונית' : 'נמוכה';
+  const scoreLow = clampScore(score - margin);
+  const scoreHigh = clampScore(score + margin);
+
+  return {score, scoreLow, scoreHigh, confidence, correct, acc, weighted:Math.round(weighted*100), byType, byLevel, unanswered, answered, finalAbility:state.ability.toFixed(1), avgAbility:avgAbility.toFixed(1)};
 }
 
 function finish(){
@@ -300,7 +319,7 @@ function finish(){
   saveHistory({mode:MODES[state.mode].label + (state.untimed ? ' ללא זמן' : ''), score:r.score, accuracy:r.acc, finalAbility:r.finalAbility, date:new Date().toLocaleDateString('he-IL')});
   const level = r.score>=135?'גבוה מאוד':r.score>=120?'חזק':r.score>=105?'טוב':r.score>=85?'בינוני':'צריך חיזוק בסיס';
   app.innerHTML = `<div class="wrap"><div class="results">
-    <div class="card"><div class="brand"><div class="logo">A</div><span>תוצאה</span></div><div class="score">${r.score}</div><h2>${level}</h2><p class="lead">${r.correct}/${state.questions.length} נכון · ${r.acc}% דיוק · ${state.untimed ? minutes + ' דקות בפועל · ללא זמן' : minutes + ' דקות'}</p><div class="stats"><div class="stat"><b>${r.weighted}%</b><span>דיוק משוקלל</span></div><div class="stat"><b>${r.finalAbility}</b><span>רמת יכולת סופית</span></div><div class="stat"><b>${r.avgAbility}</b><span>רמת יכולת ממוצעת</span></div><div class="stat"><b>${r.unanswered}</b><span>לא נענו</span></div></div><button class="btn" style="margin-top:16px" onclick="home()">חזרה לבית</button><button class="btn secondary" style="margin-top:10px" onclick="setup(state.mode)">סימולציה חדשה</button><p class="footerNote">הציון משוער: משקלל קושי שאלות, דיוק, רמת יכולת ממוצעת וסופית. זה לא ציון רשמי של המרכז הארצי.</p></div>
+    <div class="card"><div class="brand"><div class="logo">A</div><span>תוצאה</span></div><div class="score">${r.score}</div><h2>${level}</h2><p class="lead">${r.correct}/${state.questions.length} נכון · ${r.acc}% דיוק · ${state.untimed ? minutes + ' דקות בפועל · ללא זמן' : minutes + ' דקות'}</p><div class="stats"><div class="stat"><b>${r.scoreLow}-${r.scoreHigh}</b><span>טווח משוער 50–150</span></div><div class="stat"><b>${r.confidence}</b><span>אמינות הערכה</span></div><div class="stat"><b>${r.weighted}%</b><span>דיוק משוקלל</span></div><div class="stat"><b>${r.unanswered}</b><span>לא נענו</span></div><div class="stat"><b>${r.finalAbility}</b><span>רמת יכולת סופית</span></div><div class="stat"><b>${r.avgAbility}</b><span>רמת יכולת ממוצעת</span></div></div><button class="btn" style="margin-top:16px" onclick="home()">חזרה לבית</button><button class="btn secondary" style="margin-top:10px" onclick="setup(state.mode)">סימולציה חדשה</button><p class="footerNote">הציון משוער: שאלות ריקות נספרות כטעויות. טווח הציון מציג סטיית הערכה פנימית בלבד, לא ציון רשמי של המרכז הארצי.</p></div>
     <div class="card"><h2>פירוט לפי סוג שאלה</h2><div class="bars">${Object.entries(r.byType).map(([t,v])=>{const p=Math.round(v.ok/v.total*100);return `<div class="barrow"><b>${t}</b><div class="bar"><div style="width:${p}%"></div></div><span>${p}%</span></div>`}).join('')}</div><h2>פירוט לפי רמה</h2><div class="bars">${Object.entries(r.byLevel).sort((a,b)=>a[0]-b[0]).map(([t,v])=>{const p=Math.round(v.ok/v.total*100);return `<div class="barrow"><b>רמה ${t}</b><div class="bar"><div style="width:${p}%"></div></div><span>${p}%</span></div>`}).join('')}</div><h2>סקירת שאלות</h2><div class="review">${state.questions.map((q,i)=>{const ua=state.answers[q.id]; const ok=ua===q.c; return `<div class="reviewItem"><div><span class="tag">${i+1}</span><span class="tag">${q.type}</span><span class="tag">רמה ${q.level}</span></div><p class="question" style="font-weight:800">${q.q}</p><p class="${ok?'good':'bad'}">${ok?'נכון':'לא נכון'} · התשובה הנכונה: ${String.fromCharCode(65+q.c)}. ${q.a[q.c]}</p><p class="footerNote">${q.ex}</p></div>`}).join('')}</div></div>
   </div></div>`;
 }
