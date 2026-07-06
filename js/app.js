@@ -1,8 +1,8 @@
 const app = document.getElementById("app");
 const blueprint = window.PREPLAB_BLUEPRINT;
 const bank = window.PREPLAB_QUESTIONS;
-document.getElementById("versionBadge").textContent = "v0.7.1 GUI + Language";
-document.getElementById("footerVersion").textContent = "v0.7.1 GUI + Language";
+document.getElementById("versionBadge").textContent = "v0.7.2 Hebrew Polish";
+document.getElementById("footerVersion").textContent = "v0.7.2 Hebrew Polish";
 
 const I18N = {
   en: {
@@ -57,23 +57,23 @@ const I18N = {
   },
   he: {
     dir: "rtl",
-    publicBeta: "מנוע בטא ציבורי",
-    headline: "סימולציה אדפטיבית בסגנון אמירנט",
-    intro: "גרסה ראשונית שמרכיבה מבחן לפי Blueprint: השלמת משפטים, ניסוח מחדש ואנסין כחלק מובנה מהציון. התוכן מקורי, והציון הוא אומדן בלבד.",
-    startFull: "התחל סימולציה מלאה",
+    publicBeta: "גרסת בטא להתנסות",
+    headline: "סימולציית אמירנט אדפטיבית",
+    intro: "גרסה ראשונית שמרכיבה מבחן לפי מבנה אמירנט: השלמת משפטים, ניסוח מחדש וקטעי קריאה. כל התוכן מקורי, והציון הוא אומדן לתרגול בלבד.",
+    startFull: "התחלת סימולציה מלאה",
     quick: "סימולציה קצרה",
-    untimed: "מצב ללא זמן",
-    blueprint: "מבנה המבחן",
-    full: "מלא",
+    untimed: "ללא הגבלת זמן",
+    blueprint: "מבנה סימולציה",
+    full: "מלאה",
     questions: "שאלות",
-    ability: "יכולת",
-    adaptive: "אדפטיבי",
+    ability: "רמת יכולת",
+    adaptive: "אדפטיבית",
     score: "ציון",
     clamped: "50–150",
     question: "שאלה",
     untimedShort: "ללא זמן",
     difficulty: "רמת קושי",
-    currentAbility: "יכולת נוכחית",
+    currentAbility: "רמת יכולת נוכחית",
     back: "חזרה",
     skip: "דלג",
     next: "הבא",
@@ -82,17 +82,17 @@ const I18N = {
     range: "טווח משוער",
     correct: "נכון",
     accuracy: "דיוק",
-    confidence: "ביטחון",
+    confidence: "אמינות ההערכה",
     answered: "נענו",
     unanswered: "לא נענו",
     weighted: "דיוק משוקלל",
     finalAbility: "רמת יכולת סופית",
-    estimateNote: "זהו ציון תרגול משוער בלבד, לא ציון אמירנט רשמי.",
-    scoreExplain: "הציון מחושב לפי דיוק, קושי השאלות, שאלות שלא נענו ומסלול ההתקדמות האדפטיבי במהלך הסימולציה.",
+    estimateNote: "זהו ציון תרגול משוער בלבד, ולא ציון אמירנט רשמי.",
+    scoreExplain: "הציון מחושב לפי הדיוק, רמת הקושי של השאלות, שאלות שלא נענו ומסלול ההתקדמות לאורך הסימולציה.",
     byType: "פירוט לפי סוג שאלה",
     byDifficulty: "פירוט לפי רמת קושי",
-    abilityPath: "מסלול יכולת",
-    review: "סקירת שאלות",
+    abilityPath: "מסלול רמת היכולת",
+    review: "סקירת תשובות",
     yourAnswer: "התשובה שלך",
     correctAnswer: "התשובה הנכונה",
     unansweredText: "לא נענה",
@@ -102,8 +102,8 @@ const I18N = {
     he: "עברית",
     en: "English",
     sentenceCompletion: "השלמת משפטים",
-    restatement: "ניסוח מחדש",
-    reading: "אנסין"
+    restatement: "משפטים נרדפים",
+    reading: "הבנת הנקרא"
   }
 };
 
