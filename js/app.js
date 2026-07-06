@@ -1,15 +1,15 @@
 const app = document.getElementById("app");
 const blueprint = window.PREPLAB_BLUEPRINT;
 const bank = window.PREPLAB_QUESTIONS;
-document.getElementById("versionBadge").textContent = "v0.9 UI + Studio";
-document.getElementById("footerVersion").textContent = "v0.9 UI + Studio";
+document.getElementById("versionBadge").textContent = "v0.9.2 DB Expansion";
+document.getElementById("footerVersion").textContent = "v0.9.2 DB Expansion";
 
 const I18N = {
   en: {
     dir: "ltr",
     publicBeta: "Practice beta",
-    headline: "A cleaner Amirnet simulation, built to feel focused",
-    intro: "Start a timed or untimed adaptive simulation. The test includes sentence completion, restatement, and reading comprehension. Questions stay in English; the interface can be Hebrew or English.",
+    headline: "A quiet training room for Amirnet practice",
+    intro: "Start a timed or untimed adaptive simulation: sentence completion, restatement, and reading comprehension. Questions stay in English; the interface is yours to choose.",
     startFull: "Start Full Simulation",
     quick: "Quick Simulation",
     untimed: "Untimed mode",
@@ -58,8 +58,8 @@ const I18N = {
   he: {
     dir: "rtl",
     publicBeta: "גרסת התנסות",
-    headline: "סימולציית אמירנט נקייה, אדפטיבית ונוחה",
-    intro: "בחר סימולציה עם זמן או בלי זמן. המבחן כולל השלמת משפטים, ניסוח מחדש והבנת הנקרא. השאלות נשארות באנגלית, והממשק יכול להיות בעברית או באנגלית.",
+    headline: "חדר אימון שקט לאמירנט",
+    intro: "סימולציה אדפטיבית עם זמן או בלי זמן: השלמת משפטים, ניסוח מחדש והבנת הנקרא. השאלות באנגלית, הממשק לבחירתך.",
     startFull: "התחלת סימולציה מלאה",
     quick: "סימולציה קצרה",
     untimed: "ללא הגבלת זמן",

@@ -779,6 +779,526 @@ window.PREPLAB_QUESTIONS = {
       ],
       "answer": 1,
       "explanation": "Sweeping generalizations are overly broad."
+    },
+    {
+      "id": "SC-061",
+      "difficulty": 2,
+      "question": "Even a small error in the report can ____ the final results.",
+      "options": [
+        "distort",
+        "welcome",
+        "replace",
+        "decorate"
+      ],
+      "answer": 0,
+      "explanation": "Distort means change in a misleading or inaccurate way."
+    },
+    {
+      "id": "SC-062",
+      "difficulty": 2,
+      "question": "The museum's new exhibit is meant to ____ visitors with the city's early history.",
+      "options": [
+        "confuse",
+        "familiarize",
+        "avoid",
+        "interrupt"
+      ],
+      "answer": 1,
+      "explanation": "Familiarize means help someone become familiar with something."
+    },
+    {
+      "id": "SC-063",
+      "difficulty": 3,
+      "question": "Because the evidence was incomplete, the researchers were careful not to draw a ____ conclusion.",
+      "options": [
+        "premature",
+        "generous",
+        "wooden",
+        "portable"
+      ],
+      "answer": 0,
+      "explanation": "A premature conclusion is reached too early."
+    },
+    {
+      "id": "SC-064",
+      "difficulty": 3,
+      "question": "The committee decided to ____ the proposal until more data could be collected.",
+      "options": [
+        "postpone",
+        "imitate",
+        "condense",
+        "applaud"
+      ],
+      "answer": 0,
+      "explanation": "Postpone means delay."
+    },
+    {
+      "id": "SC-065",
+      "difficulty": 2,
+      "question": "The medication may be effective, but its long-term effects remain ____.",
+      "options": [
+        "uncertain",
+        "ordinary",
+        "visible",
+        "domestic"
+      ],
+      "answer": 0,
+      "explanation": "Remain uncertain means they are not yet known."
+    },
+    {
+      "id": "SC-066",
+      "difficulty": 4,
+      "question": "The mayor's explanation was so ____ that even her supporters struggled to defend it.",
+      "options": [
+        "plausible",
+        "unconvincing",
+        "essential",
+        "deliberate"
+      ],
+      "answer": 1,
+      "explanation": "Unconvincing means not persuasive."
+    },
+    {
+      "id": "SC-067",
+      "difficulty": 3,
+      "question": "The ancient manuscript was badly damaged, yet several pages were still ____.",
+      "options": [
+        "legible",
+        "annual",
+        "hostile",
+        "vacant"
+      ],
+      "answer": 0,
+      "explanation": "Legible means readable."
+    },
+    {
+      "id": "SC-068",
+      "difficulty": 2,
+      "question": "The organization provides food and medicine to communities affected by natural ____.",
+      "options": [
+        "customs",
+        "disasters",
+        "opinions",
+        "profits"
+      ],
+      "answer": 1,
+      "explanation": "Natural disasters affect communities."
+    },
+    {
+      "id": "SC-069",
+      "difficulty": 4,
+      "question": "The two theories are not identical, but they are ____ enough to be discussed together.",
+      "options": [
+        "remote",
+        "similar",
+        "illegal",
+        "fragile"
+      ],
+      "answer": 1,
+      "explanation": "Similar enough means they share features."
+    },
+    {
+      "id": "SC-070",
+      "difficulty": 3,
+      "question": "After years of debate, the law was finally ____ by parliament.",
+      "options": [
+        "enacted",
+        "imagined",
+        "borrowed",
+        "concealed"
+      ],
+      "answer": 0,
+      "explanation": "Enact a law means make it official."
+    },
+    {
+      "id": "SC-071",
+      "difficulty": 2,
+      "question": "A password should be difficult to guess but easy for the user to ____.",
+      "options": [
+        "remember",
+        "purchase",
+        "export",
+        "polish"
+      ],
+      "answer": 0,
+      "explanation": "Passwords must be remembered."
+    },
+    {
+      "id": "SC-072",
+      "difficulty": 3,
+      "question": "The speaker used several examples to ____ a difficult concept.",
+      "options": [
+        "illustrate",
+        "forbid",
+        "accuse",
+        "assemble"
+      ],
+      "answer": 0,
+      "explanation": "Illustrate means explain by example."
+    },
+    {
+      "id": "SC-073",
+      "difficulty": 4,
+      "question": "Although the plan seemed risky at first, it eventually proved ____.",
+      "options": [
+        "beneficial",
+        "careless",
+        "irrelevant",
+        "temporary"
+      ],
+      "answer": 0,
+      "explanation": "Beneficial means helpful."
+    },
+    {
+      "id": "SC-074",
+      "difficulty": 3,
+      "question": "The scientist's claim was supported by ____ evidence from several independent studies.",
+      "options": [
+        "substantial",
+        "fictional",
+        "narrow",
+        "private"
+      ],
+      "answer": 0,
+      "explanation": "Substantial evidence is strong or considerable."
+    },
+    {
+      "id": "SC-075",
+      "difficulty": 2,
+      "question": "Many animals change their behavior in response to changes in their ____.",
+      "options": [
+        "environment",
+        "alphabet",
+        "appointment",
+        "income"
+      ],
+      "answer": 0,
+      "explanation": "Environment affects animal behavior."
+    },
+    {
+      "id": "SC-076",
+      "difficulty": 3,
+      "question": "The company tried to ____ costs without reducing the quality of its product.",
+      "options": [
+        "minimize",
+        "announce",
+        "translate",
+        "scatter"
+      ],
+      "answer": 0,
+      "explanation": "Minimize means reduce."
+    },
+    {
+      "id": "SC-077",
+      "difficulty": 4,
+      "question": "The witness gave a ____ account of the accident, describing every stage in order.",
+      "options": [
+        "detailed",
+        "silent",
+        "regional",
+        "careless"
+      ],
+      "answer": 0,
+      "explanation": "A detailed account includes many details."
+    },
+    {
+      "id": "SC-078",
+      "difficulty": 3,
+      "question": "The village was once isolated, but a new road made it more ____.",
+      "options": [
+        "accessible",
+        "imaginary",
+        "anxious",
+        "optional"
+      ],
+      "answer": 0,
+      "explanation": "Accessible means easy to reach."
+    },
+    {
+      "id": "SC-079",
+      "difficulty": 2,
+      "question": "The teacher asked the students to ____ their answers with examples from the text.",
+      "options": [
+        "support",
+        "decorate",
+        "borrow",
+        "replace"
+      ],
+      "answer": 0,
+      "explanation": "Support an answer with evidence or examples."
+    },
+    {
+      "id": "SC-080",
+      "difficulty": 4,
+      "question": "The historian challenged the ____ view that the conflict had only one cause.",
+      "options": [
+        "conventional",
+        "elastic",
+        "medical",
+        "distant"
+      ],
+      "answer": 0,
+      "explanation": "Conventional means commonly accepted."
+    },
+    {
+      "id": "SC-081",
+      "difficulty": 3,
+      "question": "The new policy is intended to ____ waste and encourage recycling.",
+      "options": [
+        "reduce",
+        "pretend",
+        "celebrate",
+        "inherit"
+      ],
+      "answer": 0,
+      "explanation": "Reduce waste is the intended aim."
+    },
+    {
+      "id": "SC-082",
+      "difficulty": 4,
+      "question": "Because the instructions were ambiguous, several participants ____ them differently.",
+      "options": [
+        "interpreted",
+        "admired",
+        "erased",
+        "postponed"
+      ],
+      "answer": 0,
+      "explanation": "Interpret means understand in a particular way."
+    },
+    {
+      "id": "SC-083",
+      "difficulty": 3,
+      "question": "The island's economy depends heavily on tourism, but officials hope to ____ other industries.",
+      "options": [
+        "develop",
+        "forgive",
+        "delay",
+        "measure"
+      ],
+      "answer": 0,
+      "explanation": "Develop industries means build them up."
+    },
+    {
+      "id": "SC-084",
+      "difficulty": 2,
+      "question": "The child's improvement was ____ after only a few weeks of practice.",
+      "options": [
+        "noticeable",
+        "ancient",
+        "careless",
+        "jealous"
+      ],
+      "answer": 0,
+      "explanation": "Noticeable means easy to see."
+    },
+    {
+      "id": "SC-085",
+      "difficulty": 4,
+      "question": "The author uses humor to make a serious argument more ____ to readers.",
+      "options": [
+        "accessible",
+        "obedient",
+        "hostile",
+        "mechanical"
+      ],
+      "answer": 0,
+      "explanation": "Accessible can mean easier to understand."
+    },
+    {
+      "id": "SC-086",
+      "difficulty": 5,
+      "question": "The results did not ____ the original hypothesis; instead, they raised new questions.",
+      "options": [
+        "confirm",
+        "decorate",
+        "transport",
+        "exaggerate"
+      ],
+      "answer": 0,
+      "explanation": "Confirm means support or prove correct."
+    },
+    {
+      "id": "SC-087",
+      "difficulty": 3,
+      "question": "In dry regions, water must be used ____ because supplies are limited.",
+      "options": [
+        "sparingly",
+        "violently",
+        "publicly",
+        "recently"
+      ],
+      "answer": 0,
+      "explanation": "Sparingly means in small amounts."
+    },
+    {
+      "id": "SC-088",
+      "difficulty": 4,
+      "question": "The judge rejected the testimony because it was not ____ to the case.",
+      "options": [
+        "relevant",
+        "generous",
+        "wooden",
+        "frequent"
+      ],
+      "answer": 0,
+      "explanation": "Relevant means connected to the matter."
+    },
+    {
+      "id": "SC-089",
+      "difficulty": 2,
+      "question": "The old bridge was closed after engineers found it was no longer ____.",
+      "options": [
+        "safe",
+        "famous",
+        "polite",
+        "ordinary"
+      ],
+      "answer": 0,
+      "explanation": "A bridge must be safe."
+    },
+    {
+      "id": "SC-090",
+      "difficulty": 5,
+      "question": "The philosopher's argument is difficult because it depends on several ____ distinctions.",
+      "options": [
+        "subtle",
+        "violent",
+        "domestic",
+        "empty"
+      ],
+      "answer": 0,
+      "explanation": "Subtle distinctions are fine or delicate differences."
+    },
+    {
+      "id": "SC-091",
+      "difficulty": 3,
+      "question": "The athlete was praised not only for talent but also for remarkable ____.",
+      "options": [
+        "discipline",
+        "weather",
+        "furniture",
+        "permission"
+      ],
+      "answer": 0,
+      "explanation": "Discipline is important for athletes."
+    },
+    {
+      "id": "SC-092",
+      "difficulty": 4,
+      "question": "The study's findings are ____ with earlier research on the same topic.",
+      "options": [
+        "consistent",
+        "careless",
+        "annual",
+        "illegal"
+      ],
+      "answer": 0,
+      "explanation": "Consistent with means in agreement with."
+    },
+    {
+      "id": "SC-093",
+      "difficulty": 2,
+      "question": "The company issued a statement to ____ rumors about its financial problems.",
+      "options": [
+        "deny",
+        "plant",
+        "repair",
+        "imagine"
+      ],
+      "answer": 0,
+      "explanation": "Deny rumors means say they are not true."
+    },
+    {
+      "id": "SC-094",
+      "difficulty": 5,
+      "question": "The novel's ending is deliberately ____, allowing readers to form their own interpretations.",
+      "options": [
+        "ambiguous",
+        "transparent",
+        "domestic",
+        "ordinary"
+      ],
+      "answer": 0,
+      "explanation": "Ambiguous means open to more than one interpretation."
+    },
+    {
+      "id": "SC-095",
+      "difficulty": 3,
+      "question": "The discovery was important because it ____ a connection between diet and memory.",
+      "options": [
+        "revealed",
+        "borrowed",
+        "ignored",
+        "polished"
+      ],
+      "answer": 0,
+      "explanation": "Reveal means show or make known."
+    },
+    {
+      "id": "SC-096",
+      "difficulty": 4,
+      "question": "The committee's decision was criticized as ____, since no clear standard had been applied.",
+      "options": [
+        "arbitrary",
+        "accurate",
+        "essential",
+        "generous"
+      ],
+      "answer": 0,
+      "explanation": "Arbitrary means based on personal choice rather than rules."
+    },
+    {
+      "id": "SC-097",
+      "difficulty": 2,
+      "question": "The city created more bicycle lanes to ____ people to drive less.",
+      "options": [
+        "encourage",
+        "confuse",
+        "prevent",
+        "imitate"
+      ],
+      "answer": 0,
+      "explanation": "Encourage means motivate."
+    },
+    {
+      "id": "SC-098",
+      "difficulty": 5,
+      "question": "The biologist warned that the species could disappear unless its habitat is ____.",
+      "options": [
+        "protected",
+        "invented",
+        "translated",
+        "estimated"
+      ],
+      "answer": 0,
+      "explanation": "Habitats must be protected to prevent extinction."
+    },
+    {
+      "id": "SC-099",
+      "difficulty": 3,
+      "question": "The editor removed several paragraphs because they were ____ to the main argument.",
+      "options": [
+        "irrelevant",
+        "necessary",
+        "visible",
+        "careful"
+      ],
+      "answer": 0,
+      "explanation": "Irrelevant means not related."
+    },
+    {
+      "id": "SC-100",
+      "difficulty": 4,
+      "question": "The experiment was repeated many times to ensure the results were ____.",
+      "options": [
+        "reliable",
+        "jealous",
+        "ancient",
+        "private"
+      ],
+      "answer": 0,
+      "explanation": "Reliable results can be trusted."
     }
   ],
   "restatement": [
@@ -1249,6 +1769,266 @@ window.PREPLAB_QUESTIONS = {
       ],
       "answer": 1,
       "explanation": "Even cautious remarks can be interpreted as criticism."
+    },
+    {
+      "id": "RS-037",
+      "difficulty": 2,
+      "question": "Many people underestimate how much their daily habits affect their health.",
+      "options": [
+        "Daily habits can have a greater effect on health than many people realize.",
+        "Most people know exactly how their habits affect their health.",
+        "Health is rarely influenced by daily behavior.",
+        "People change their habits only after becoming ill."
+      ],
+      "answer": 0,
+      "explanation": "The sentence says people often do not realize the importance of daily habits."
+    },
+    {
+      "id": "RS-038",
+      "difficulty": 3,
+      "question": "Although the invention was simple, its impact on communication was enormous.",
+      "options": [
+        "The invention was complex and therefore changed communication.",
+        "A simple invention can still greatly affect the way people communicate.",
+        "Communication improved only because the invention was difficult to use.",
+        "The invention had little effect because it was simple."
+      ],
+      "answer": 1,
+      "explanation": "The contrast is between simplicity and large impact."
+    },
+    {
+      "id": "RS-039",
+      "difficulty": 3,
+      "question": "The committee approved the plan only after several major changes had been made.",
+      "options": [
+        "The plan was accepted in its original form.",
+        "Several changes were made after the committee approved the plan.",
+        "The committee accepted the plan once it had been substantially revised.",
+        "The committee rejected the plan because it had changed."
+      ],
+      "answer": 2,
+      "explanation": "Only after changes means approval followed revision."
+    },
+    {
+      "id": "RS-040",
+      "difficulty": 4,
+      "question": "Not all traditional explanations of historical events are supported by modern evidence.",
+      "options": [
+        "Modern evidence confirms every traditional historical explanation.",
+        "Some traditional accounts of history are not supported by current evidence.",
+        "Traditional explanations are always more accurate than modern ones.",
+        "Historical events cannot be studied with evidence."
+      ],
+      "answer": 1,
+      "explanation": "Not all are supported means some are not."
+    },
+    {
+      "id": "RS-041",
+      "difficulty": 2,
+      "question": "The writer's reputation grew slowly, long after her first books were published.",
+      "options": [
+        "The writer became famous immediately after her first books appeared.",
+        "The writer's fame developed gradually after her early publications.",
+        "The writer stopped publishing when she became famous.",
+        "The writer's first books damaged her reputation."
+      ],
+      "answer": 1,
+      "explanation": "Reputation grew slowly after publication."
+    },
+    {
+      "id": "RS-042",
+      "difficulty": 4,
+      "question": "Because the lake is shallow, even a moderate drought can reduce its size considerably.",
+      "options": [
+        "A shallow lake can shrink greatly during a moderate drought.",
+        "The lake remains the same size during droughts because it is shallow.",
+        "Only severe droughts can affect shallow lakes.",
+        "The lake became shallow because of one drought."
+      ],
+      "answer": 0,
+      "explanation": "The cause is shallowness, which makes the drought effect large."
+    },
+    {
+      "id": "RS-043",
+      "difficulty": 3,
+      "question": "The study did not prove the theory, but it made the theory more plausible.",
+      "options": [
+        "The study completely disproved the theory.",
+        "The study offered some support for the theory without proving it conclusively.",
+        "The theory was plausible before the study but impossible afterward.",
+        "The study proved a different theory entirely."
+      ],
+      "answer": 1,
+      "explanation": "More plausible means more believable, not proven."
+    },
+    {
+      "id": "RS-044",
+      "difficulty": 5,
+      "question": "Few technological changes are adopted widely unless they solve a problem people already recognize.",
+      "options": [
+        "Technologies spread most easily when they address a problem people know they have.",
+        "People adopt new technologies mainly when they do not understand the problem.",
+        "A technology must be complex before it can become common.",
+        "Recognized problems prevent technology from spreading."
+      ],
+      "answer": 0,
+      "explanation": "The original states a condition for wide adoption."
+    },
+    {
+      "id": "RS-045",
+      "difficulty": 4,
+      "question": "The artist's later paintings are less colorful but more carefully structured than his early work.",
+      "options": [
+        "The artist's early paintings were less colorful and less organized.",
+        "Compared with the early paintings, the later ones use fewer colors but have stronger structure.",
+        "The later paintings are both more colorful and less organized.",
+        "The artist stopped painting carefully in his later years."
+      ],
+      "answer": 1,
+      "explanation": "It preserves both comparisons."
+    },
+    {
+      "id": "RS-046",
+      "difficulty": 3,
+      "question": "The discovery was accidental, yet the scientist's preparation allowed her to understand its importance.",
+      "options": [
+        "The scientist recognized the value of an unexpected discovery because she was prepared.",
+        "The discovery was planned carefully from the beginning.",
+        "The scientist ignored the accident because it seemed unimportant.",
+        "Preparation prevented the discovery from occurring."
+      ],
+      "answer": 0,
+      "explanation": "Accidental discovery + prepared mind."
+    },
+    {
+      "id": "RS-047",
+      "difficulty": 4,
+      "question": "The city's population increased despite the high cost of housing.",
+      "options": [
+        "Housing became cheaper because the population increased.",
+        "The city grew even though living there was expensive.",
+        "The population decreased because housing was costly.",
+        "Only wealthy people left the city."
+      ],
+      "answer": 1,
+      "explanation": "Despite indicates contrast."
+    },
+    {
+      "id": "RS-048",
+      "difficulty": 5,
+      "question": "No explanation of the phenomenon is satisfactory unless it accounts for both social and biological factors.",
+      "options": [
+        "A good explanation must include both social and biological factors.",
+        "Social factors alone can fully explain the phenomenon.",
+        "Biological explanations are always unsatisfactory.",
+        "The phenomenon cannot be explained in any way."
+      ],
+      "answer": 0,
+      "explanation": "Unless it accounts for both = must account for both."
+    },
+    {
+      "id": "RS-049",
+      "difficulty": 3,
+      "question": "The museum attracted more visitors after it began offering free evening admission.",
+      "options": [
+        "Free evening admission was followed by an increase in visitors to the museum.",
+        "The museum became free because fewer people visited it.",
+        "Visitors stopped coming when evening admission became free.",
+        "The museum charged more in the evening to attract visitors."
+      ],
+      "answer": 0,
+      "explanation": "Cause/effect: free evenings and more visitors."
+    },
+    {
+      "id": "RS-050",
+      "difficulty": 4,
+      "question": "The report was criticized not for its conclusions but for the weak evidence on which they were based.",
+      "options": [
+        "Critics mainly objected to the evidence supporting the report's conclusions.",
+        "The report was praised because its evidence was strong.",
+        "The conclusions were criticized even though the evidence was strong.",
+        "Critics objected to the topic of the report, not its evidence."
+      ],
+      "answer": 0,
+      "explanation": "The criticism concerns weak evidence, not the conclusions themselves."
+    },
+    {
+      "id": "RS-051",
+      "difficulty": 5,
+      "question": "Only after the language was standardized did newspapers become widely readable across the country.",
+      "options": [
+        "Newspapers became broadly readable once the language had been standardized.",
+        "The language became standardized because newspapers were unreadable.",
+        "Newspapers were widely read before the language changed.",
+        "Standardization made newspapers less useful nationally."
+      ],
+      "answer": 0,
+      "explanation": "Only after X did Y = Y happened after X."
+    },
+    {
+      "id": "RS-052",
+      "difficulty": 4,
+      "question": "The new treatment reduces symptoms in many patients, though it does not cure the disease.",
+      "options": [
+        "The treatment helps many patients feel better without eliminating the disease.",
+        "The treatment cures the disease in most patients.",
+        "The treatment worsens symptoms but removes the disease.",
+        "Patients cannot benefit from a treatment unless it cures them."
+      ],
+      "answer": 0,
+      "explanation": "Reduces symptoms but does not cure."
+    },
+    {
+      "id": "RS-053",
+      "difficulty": 3,
+      "question": "The author's main claim is that convenience often determines what people choose, even when better options exist.",
+      "options": [
+        "People may choose convenient options rather than better ones.",
+        "People always choose the best option available.",
+        "Convenience matters only when all options are equal.",
+        "The author argues that better options are never chosen."
+      ],
+      "answer": 0,
+      "explanation": "The key idea is convenience over quality."
+    },
+    {
+      "id": "RS-054",
+      "difficulty": 5,
+      "question": "The data are too limited to justify the sweeping conclusions drawn by the researchers.",
+      "options": [
+        "The researchers made conclusions that were broader than the data supported.",
+        "The researchers collected too much data to reach a conclusion.",
+        "The conclusions were narrow because the data were limited.",
+        "The data fully justified the researchers' claims."
+      ],
+      "answer": 0,
+      "explanation": "Too limited to justify sweeping conclusions."
+    },
+    {
+      "id": "RS-055",
+      "difficulty": 4,
+      "question": "The popularity of the book owes less to its style than to the controversy surrounding its subject.",
+      "options": [
+        "The book became popular mainly because its subject was controversial rather than because of its style.",
+        "The book's style was the only reason for its popularity.",
+        "The book was unpopular because its subject was controversial.",
+        "The controversy reduced interest in the book's style."
+      ],
+      "answer": 0,
+      "explanation": "Owes less to A than B = B is the main factor."
+    },
+    {
+      "id": "RS-056",
+      "difficulty": 5,
+      "question": "Had the warning been issued earlier, much of the damage might have been avoided.",
+      "options": [
+        "An earlier warning could have prevented a large part of the damage.",
+        "The warning caused most of the damage.",
+        "The damage was avoided because the warning arrived early.",
+        "No warning could have reduced the damage."
+      ],
+      "answer": 0,
+      "explanation": "Counterfactual: earlier warning might have avoided damage."
     }
   ],
   "reading": [
@@ -2185,6 +2965,474 @@ window.PREPLAB_QUESTIONS = {
           ],
           "answer": 0,
           "explanation": "The passage explains a topic in a balanced way."
+        }
+      ]
+    },
+    {
+      "id": "RC-013",
+      "difficulty": 3,
+      "title": "The Uses of Salt",
+      "passage": "Salt has always occupied an unusual place in human life. In small amounts, it is necessary for the body to function properly, but in excessive amounts it may contribute to health problems such as high blood pressure. Before refrigeration, salt also had another important use: it helped preserve meat and fish for long periods. This made it possible for communities to store food, travel farther, and trade with distant regions. In many societies, governments controlled salt production because whoever controlled salt controlled a basic need. Today, salt is cheap and widely available, yet debates about its use continue. Doctors often advise people to reduce the amount of processed food they eat, since such food may contain far more salt than people realize.",
+      "questions": [
+        {
+          "id": "RC-013-Q1",
+          "type": "main_idea",
+          "difficulty": 3,
+          "question": "The passage mainly discusses ____.",
+          "options": [
+            "the role of salt in health, food preservation, and society",
+            "why salt should be removed entirely from modern diets",
+            "the invention of refrigeration",
+            "the chemical structure of salt"
+          ],
+          "answer": 0,
+          "explanation": "The passage covers health, preservation, trade, and control of salt."
+        },
+        {
+          "id": "RC-013-Q2",
+          "type": "detail",
+          "difficulty": 2,
+          "question": "According to the passage, salt was useful before refrigeration because it ____.",
+          "options": [
+            "made food last longer",
+            "made food sweeter",
+            "replaced government control",
+            "lowered blood pressure"
+          ],
+          "answer": 0,
+          "explanation": "Salt helped preserve meat and fish."
+        },
+        {
+          "id": "RC-013-Q3",
+          "type": "inference",
+          "difficulty": 4,
+          "question": "It can be inferred that governments valued salt production because salt ____.",
+          "options": [
+            "was connected to an essential human need",
+            "was easy to replace with sugar",
+            "had no economic importance",
+            "was used only by doctors"
+          ],
+          "answer": 0,
+          "explanation": "Control over salt meant control over a basic need."
+        },
+        {
+          "id": "RC-013-Q4",
+          "type": "vocabulary",
+          "difficulty": 3,
+          "question": "In the passage, 'excessive' most nearly means ____.",
+          "options": [
+            "too great",
+            "careful",
+            "temporary",
+            "natural"
+          ],
+          "answer": 0,
+          "explanation": "Excessive means more than is appropriate."
+        },
+        {
+          "id": "RC-013-Q5",
+          "type": "purpose",
+          "difficulty": 3,
+          "question": "The final sentence is meant to show that ____.",
+          "options": [
+            "salt remains a concern in modern diets",
+            "processed food contains no salt",
+            "doctors no longer discuss salt",
+            "salt is used mainly for trade today"
+          ],
+          "answer": 0,
+          "explanation": "The author connects salt to current dietary advice."
+        }
+      ]
+    },
+    {
+      "id": "RC-014",
+      "difficulty": 4,
+      "title": "Left-Handed Tools",
+      "passage": "Most everyday tools are designed with right-handed users in mind. Scissors, desks, computer mice, and even kitchen equipment may feel awkward to a left-handed person. For many years, this inconvenience was treated as a minor personal problem rather than as a design issue. Recently, however, researchers and designers have paid more attention to the ways in which ordinary objects assume a 'standard' user. The issue is not limited to comfort. When a tool is difficult to use, a person may work more slowly or make more mistakes. At the same time, left-handed people are often highly successful in sports that require quick reactions, perhaps because opponents are less accustomed to their movements. Thus, left-handedness can be both a disadvantage in daily tools and an advantage in certain competitive situations.",
+      "questions": [
+        {
+          "id": "RC-014-Q1",
+          "type": "main_idea",
+          "difficulty": 4,
+          "question": "The passage mainly argues that left-handedness ____.",
+          "options": [
+            "can create difficulties in daily life but advantages in some activities",
+            "is always a serious disability",
+            "has disappeared because tools are better designed",
+            "matters only in professional sports"
+          ],
+          "answer": 0,
+          "explanation": "The passage presents both difficulties and advantages."
+        },
+        {
+          "id": "RC-014-Q2",
+          "type": "detail",
+          "difficulty": 3,
+          "question": "According to the passage, tools may cause left-handed people to ____.",
+          "options": [
+            "work more slowly or make more mistakes",
+            "avoid sports entirely",
+            "become right-handed",
+            "design computers"
+          ],
+          "answer": 0,
+          "explanation": "The passage states this directly."
+        },
+        {
+          "id": "RC-014-Q3",
+          "type": "inference",
+          "difficulty": 4,
+          "question": "The author would probably support ____.",
+          "options": [
+            "designing objects for a wider range of users",
+            "forcing left-handed people to use right-handed tools",
+            "removing left-handed players from sports",
+            "ignoring hand preference in product design"
+          ],
+          "answer": 0,
+          "explanation": "The passage frames the issue as a design problem."
+        },
+        {
+          "id": "RC-014-Q4",
+          "type": "vocabulary",
+          "difficulty": 3,
+          "question": "In the passage, 'awkward' most nearly means ____.",
+          "options": [
+            "difficult to use comfortably",
+            "extremely expensive",
+            "beautifully designed",
+            "impossible to find"
+          ],
+          "answer": 0,
+          "explanation": "Awkward describes uncomfortable or difficult use."
+        },
+        {
+          "id": "RC-014-Q5",
+          "type": "purpose",
+          "difficulty": 4,
+          "question": "The sports example is used to show that ____.",
+          "options": [
+            "a trait that is inconvenient in one setting may help in another",
+            "left-handed people are poor athletes",
+            "tools and sports are identical",
+            "competition removes design problems"
+          ],
+          "answer": 0,
+          "explanation": "It contrasts daily disadvantages with competitive advantages."
+        }
+      ]
+    },
+    {
+      "id": "RC-015",
+      "difficulty": 3,
+      "title": "Protein and Diet",
+      "passage": "Protein is necessary for growth and repair, but not all sources of protein are identical. The body can produce some amino acids on its own, while others must be obtained from food. Animal products such as eggs, milk, fish, and meat often contain these necessary amino acids in useful proportions. Plant foods, including beans, grains, nuts, and seeds, can also provide protein, but some may lack one or more essential amino acids. This does not mean that a person must eat meat; rather, it means that people who rely on plant sources should combine different foods carefully. Age, health, and activity level also affect the amount of protein a person needs. Children, athletes, and pregnant women, for example, may require more protein than the average adult.",
+      "questions": [
+        {
+          "id": "RC-015-Q1",
+          "type": "main_idea",
+          "difficulty": 3,
+          "question": "The passage mainly explains ____.",
+          "options": [
+            "why protein needs and sources vary",
+            "why plant foods contain no protein",
+            "how to cook meat safely",
+            "why adults do not need protein"
+          ],
+          "answer": 0,
+          "explanation": "The passage discusses protein sources and different needs."
+        },
+        {
+          "id": "RC-015-Q2",
+          "type": "detail",
+          "difficulty": 2,
+          "question": "According to the passage, some amino acids ____.",
+          "options": [
+            "must come from food",
+            "are found only in water",
+            "are harmful to children",
+            "cannot be found in animal products"
+          ],
+          "answer": 0,
+          "explanation": "Some amino acids must be obtained from food."
+        },
+        {
+          "id": "RC-015-Q3",
+          "type": "inference",
+          "difficulty": 4,
+          "question": "A vegetarian diet can be adequate if ____.",
+          "options": [
+            "different plant foods are combined carefully",
+            "all grains are avoided",
+            "protein is removed from meals",
+            "only one plant food is eaten"
+          ],
+          "answer": 0,
+          "explanation": "The passage says plant sources should be combined carefully."
+        },
+        {
+          "id": "RC-015-Q4",
+          "type": "vocabulary",
+          "difficulty": 3,
+          "question": "In the passage, 'proportions' most nearly means ____.",
+          "options": [
+            "relative amounts",
+            "scientific names",
+            "cooking methods",
+            "medical warnings"
+          ],
+          "answer": 0,
+          "explanation": "Proportions are relative amounts."
+        },
+        {
+          "id": "RC-015-Q5",
+          "type": "detail",
+          "difficulty": 3,
+          "question": "Which group is mentioned as possibly needing more protein?",
+          "options": [
+            "pregnant women",
+            "retired judges",
+            "office buildings",
+            "museum visitors"
+          ],
+          "answer": 0,
+          "explanation": "Pregnant women are explicitly mentioned."
+        }
+      ]
+    },
+    {
+      "id": "RC-016",
+      "difficulty": 4,
+      "title": "Accidental Discoveries",
+      "passage": "Stories of invention often make discovery appear sudden, as if a useful object simply appeared by chance. Chance can indeed play a role, but accidents become discoveries only when someone notices their significance. A scientist who observes an unexpected change in an experiment may ignore it, or may investigate it further. The difference often lies in preparation: a trained mind can recognize that an accident points to a broader principle. This pattern appears in many fields, from medicine to materials science. A failed experiment may reveal a new substance; a mistaken measurement may suggest a hidden process. For this reason, accidental discoveries are rarely purely accidental. They depend on curiosity, knowledge, and the willingness to examine results that do not fit expectations.",
+      "questions": [
+        {
+          "id": "RC-016-Q1",
+          "type": "main_idea",
+          "difficulty": 4,
+          "question": "The passage mainly suggests that accidental discoveries ____.",
+          "options": [
+            "depend on both chance and prepared observation",
+            "are entirely random and require no skill",
+            "happen only in medicine",
+            "should be ignored unless predicted"
+          ],
+          "answer": 0,
+          "explanation": "The passage balances chance with preparation."
+        },
+        {
+          "id": "RC-016-Q2",
+          "type": "detail",
+          "difficulty": 3,
+          "question": "According to the passage, a trained mind can ____.",
+          "options": [
+            "recognize the importance of an unexpected result",
+            "prevent all experimental mistakes",
+            "make every discovery predictable",
+            "avoid curiosity"
+          ],
+          "answer": 0,
+          "explanation": "Preparation helps recognize significance."
+        },
+        {
+          "id": "RC-016-Q3",
+          "type": "inference",
+          "difficulty": 4,
+          "question": "The author would most likely agree that a failed experiment ____.",
+          "options": [
+            "may still produce valuable knowledge",
+            "is always useless",
+            "proves that the scientist was careless",
+            "should never be repeated"
+          ],
+          "answer": 0,
+          "explanation": "Failed experiments may reveal something new."
+        },
+        {
+          "id": "RC-016-Q4",
+          "type": "vocabulary",
+          "difficulty": 3,
+          "question": "In the passage, 'significance' most nearly means ____.",
+          "options": [
+            "importance",
+            "location",
+            "speed",
+            "appearance"
+          ],
+          "answer": 0,
+          "explanation": "Significance means importance."
+        },
+        {
+          "id": "RC-016-Q5",
+          "type": "purpose",
+          "difficulty": 4,
+          "question": "The final sentence emphasizes that accidental discoveries require ____.",
+          "options": [
+            "active investigation",
+            "complete ignorance",
+            "public approval",
+            "simple equipment"
+          ],
+          "answer": 0,
+          "explanation": "Curiosity, knowledge, and examination are active qualities."
+        }
+      ]
+    },
+    {
+      "id": "RC-017",
+      "difficulty": 5,
+      "title": "Memory and Childhood",
+      "passage": "Adults often remember scattered images from early childhood, but most cannot recall continuous events from their first years of life. Psychologists have offered several explanations for this phenomenon. One possibility is that the young brain is still developing the systems needed to organize experiences into lasting memories. Another is that children have not yet developed enough language to describe events in a stable form. Memory is not simply a recording of experience; it is shaped by attention, language, emotion, and later interpretation. This may explain why a person can remember the feeling of a place without recalling exactly what happened there. Research on childhood memory therefore raises a larger question: whether remembering is mainly a matter of storing the past or of reconstructing it later.",
+      "questions": [
+        {
+          "id": "RC-017-Q1",
+          "type": "main_idea",
+          "difficulty": 5,
+          "question": "The passage mainly discusses ____.",
+          "options": [
+            "possible reasons early childhood memories are limited",
+            "why children remember more than adults",
+            "methods for improving language learning",
+            "the history of psychology as a profession"
+          ],
+          "answer": 0,
+          "explanation": "The passage explores explanations for limited early memories."
+        },
+        {
+          "id": "RC-017-Q2",
+          "type": "detail",
+          "difficulty": 4,
+          "question": "One explanation mentioned is that young children may lack enough ____.",
+          "options": [
+            "language to describe events stably",
+            "interest in their surroundings",
+            "emotion during experiences",
+            "ability to see images"
+          ],
+          "answer": 0,
+          "explanation": "Language development is explicitly mentioned."
+        },
+        {
+          "id": "RC-017-Q3",
+          "type": "inference",
+          "difficulty": 5,
+          "question": "The author implies that memory is ____.",
+          "options": [
+            "an active process rather than a perfect recording",
+            "always accurate when emotional",
+            "unrelated to language",
+            "fully developed at birth"
+          ],
+          "answer": 0,
+          "explanation": "Memory is shaped by several factors and reconstructed."
+        },
+        {
+          "id": "RC-017-Q4",
+          "type": "vocabulary",
+          "difficulty": 4,
+          "question": "In the passage, 'continuous' most nearly means ____.",
+          "options": [
+            "unbroken",
+            "painful",
+            "imaginary",
+            "unimportant"
+          ],
+          "answer": 0,
+          "explanation": "Continuous means unbroken or ongoing."
+        },
+        {
+          "id": "RC-017-Q5",
+          "type": "purpose",
+          "difficulty": 5,
+          "question": "The final question is used to ____.",
+          "options": [
+            "connect childhood memory to a broader issue about memory itself",
+            "prove that childhood memories are always false",
+            "reject all psychological research",
+            "explain how to record events"
+          ],
+          "answer": 0,
+          "explanation": "It broadens the discussion from childhood memory to memory generally."
+        }
+      ]
+    },
+    {
+      "id": "RC-018",
+      "difficulty": 4,
+      "title": "Standardized Tests",
+      "passage": "Standardized tests are often changed when schools change what they teach. If students are expected to read more complex texts or solve problems in new ways, exams must eventually reflect those expectations. Such changes can be controversial. Supporters argue that tests should measure the skills students actually need, while critics worry that frequent changes make it harder to compare scores from different years. Test designers therefore face a difficult task: they must update exams without making them unfamiliar or unfair. A well-designed revision does not simply make a test harder. It tries to preserve the test's purpose while adjusting the kinds of questions used to measure that purpose.",
+      "questions": [
+        {
+          "id": "RC-018-Q1",
+          "type": "main_idea",
+          "difficulty": 4,
+          "question": "The passage mainly concerns ____.",
+          "options": [
+            "why and how standardized tests are revised",
+            "the history of one particular school",
+            "why tests should never change",
+            "methods for avoiding reading in exams"
+          ],
+          "answer": 0,
+          "explanation": "The passage explains test revisions."
+        },
+        {
+          "id": "RC-018-Q2",
+          "type": "detail",
+          "difficulty": 3,
+          "question": "Supporters of test changes argue that exams should measure ____.",
+          "options": [
+            "skills students actually need",
+            "only memorized facts",
+            "the same questions every year",
+            "students' handwriting"
+          ],
+          "answer": 0,
+          "explanation": "This is stated in the passage."
+        },
+        {
+          "id": "RC-018-Q3",
+          "type": "inference",
+          "difficulty": 4,
+          "question": "A good test revision should ____.",
+          "options": [
+            "balance change with fairness",
+            "make old scores meaningless",
+            "remove difficult questions",
+            "ignore school curriculum"
+          ],
+          "answer": 0,
+          "explanation": "The passage stresses updating without unfairness."
+        },
+        {
+          "id": "RC-018-Q4",
+          "type": "vocabulary",
+          "difficulty": 3,
+          "question": "In the passage, 'controversial' most nearly means ____.",
+          "options": [
+            "causing disagreement",
+            "easy to prove",
+            "secretly planned",
+            "quickly forgotten"
+          ],
+          "answer": 0,
+          "explanation": "Controversial means causing debate."
+        },
+        {
+          "id": "RC-018-Q5",
+          "type": "purpose",
+          "difficulty": 4,
+          "question": "The final sentence clarifies that making a test harder is ____.",
+          "options": [
+            "not the main goal of revision",
+            "the only reason tests are changed",
+            "always unfair",
+            "impossible to do"
+          ],
+          "answer": 0,
+          "explanation": "A revision preserves purpose while adjusting questions."
         }
       ]
     }

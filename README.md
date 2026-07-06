@@ -1,13 +1,8 @@
-# PrepLab Amirnet v0.9
+# PrepLab Amirnet Simulator v0.9.2
 
-UI refresh plus first internal Question Studio.
+Database expansion based on style analysis of uploaded AMIR-style PDFs.
 
-## New
-- Softer, cleaner UI
-- Better mobile spacing
-- Link to Question Studio
-- `studio.html` draft generator for Sentence Completion and Restatement
-- Version label: v0.9 UI + Studio
-
-## Important
-Question Studio creates drafts only. Review every question before adding it to `questions/questionBank.js`.
+Notes:
+- New items are original practice questions, not copied from the PDFs.
+- Added more Sentence Completion, Restatement, and Reading passages.
+- Studio remains hidden; no public link from the main UI.
