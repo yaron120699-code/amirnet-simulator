@@ -1,8 +1,8 @@
 const app = document.getElementById("app");
 const blueprint = window.PREPLAB_BLUEPRINT;
 const bank = window.PREPLAB_QUESTIONS;
-document.getElementById("versionBadge").textContent = "v0.9.6 Placement Beta";
-document.getElementById("footerVersion").textContent = "v0.9.6 Placement Beta";
+document.getElementById("versionBadge").textContent = "v0.9.7 Level Beta";
+document.getElementById("footerVersion").textContent = "v0.9.7 Level Beta";
 
 const I18N = {
   en: {
@@ -20,14 +20,11 @@ const I18N = {
     adaptive: "adaptive",
     score: "Score",
     clamped: "50–150",
-    targetInstitution: "Target institution",
-    placement: "Estimated placement",
-    distanceToExemption: "Distance to exemption",
-    pointsLeft: "points left",
-    exemptionReached: "Exemption reached",
+    placement: "Estimated English Level",
     nextGoal: "Next goal",
-    officialDisclaimer: "This placement is an estimate. Official placement and course requirements are determined only by the institution and may change.",
-    institutionStatusDraft: "Draft mapping",
+    pointsLeft: "points remaining",
+    exemptionReached: "Exemption reached",
+    officialDisclaimer: "This is an estimated English level based on your simulation performance. Official placement is determined only by the official Amirnet exam.",
     question: "Question",
     untimedShort: "Untimed",
     difficulty: "Difficulty",
@@ -79,14 +76,11 @@ const I18N = {
     adaptive: "אדפטיבית",
     score: "ציון",
     clamped: "50–150",
-    targetInstitution: "מוסד יעד",
-    placement: "רמה משוערת",
-    distanceToExemption: "מרחק מפטור",
+    placement: "רמת אנגלית משוערת",
+    nextGoal: "היעד הבא",
     pointsLeft: "נקודות חסרות",
     exemptionReached: "הגעת לפטור",
-    nextGoal: "היעד הבא",
-    officialDisclaimer: "השיבוץ הוא הערכה בלבד. השיבוץ הרשמי ודרישות הקורסים נקבעים רק על ידי מוסד הלימודים ועשויים להשתנות.",
-    institutionStatusDraft: "מיפוי טיוטה",
+    officialDisclaimer: "זוהי רמת אנגלית משוערת על בסיס הביצועים שלך בסימולציה. השיבוץ הרשמי נקבע רק במבחן אמירנט הרשמי.",
     question: "שאלה",
     untimedShort: "ללא זמן",
     difficulty: "רמת קושי",
@@ -138,8 +132,7 @@ let state = {
   secondsLeft: 0,
   timer: null,
   startedAt: null,
-  lang: localStorage.getItem("preplabLang") || "he",
-  institution: localStorage.getItem("preplabInstitution") || "general"
+  lang: localStorage.getItem("preplabLang") || "he"
 };
 
 function getRecentQuestionIds() {
@@ -177,19 +170,6 @@ function setLanguage(lang) {
 }
 window.setLanguage = setLanguage;
 
-function setInstitution(id) {
-  state.institution = id || "general";
-  localStorage.setItem("preplabInstitution", state.institution);
-}
-window.setInstitution = setInstitution;
-
-function institutionOptions() {
-  if (!window.PrepLabPlacement) return "";
-  return PrepLabPlacement.listInstitutions(state.lang)
-    .map(inst => `<option value="${inst.id}" ${state.institution === inst.id ? "selected" : ""}>${inst.label}${inst.status === "draft" ? " · " + t("institutionStatusDraft") : ""}</option>`)
-    .join("");
-}
-
 function applyLanguageChrome() {
   document.documentElement.lang = state.lang;
   document.documentElement.dir = t("dir");
@@ -215,7 +195,6 @@ function renderHome() {
           <button class="secondary" onclick="startExam('quick')">${t("quick")}</button>
         </div>
         <label class="toggle"><input id="untimed" type="checkbox" /> ${t("untimed")}</label>
-        <label class="field-label">${t("targetInstitution")}<select class="institution-select" onchange="setInstitution(this.value)">${institutionOptions()}</select></label>
       </div>
       <div class="card">
         <div class="eyebrow">${t("blueprint")}</div>
@@ -352,9 +331,12 @@ function abilityPath() {
 
 function placementBlock(result) {
   if (!window.PrepLabPlacement) return "";
-  const placement = PrepLabPlacement.classify(result.score, state.institution, state.lang);
+  const placement = PrepLabPlacement.classify(result.score, state.lang, result.confidence);
   const pos = Math.max(0, Math.min(100, placement.progress));
   const goalPos = Math.max(0, Math.min(100, ((placement.exemptionScore - 50) / 100) * 100));
+  const goalText = placement.pointsToExemption > 0
+    ? `${placement.exemptionLabel} (${placement.exemptionScore})`
+    : t("exemptionReached");
   const distanceText = placement.pointsToExemption > 0
     ? `${placement.pointsToExemption} ${t("pointsLeft")}`
     : t("exemptionReached");
@@ -364,11 +346,11 @@ function placementBlock(result) {
         <div>
           <div class="eyebrow">${t("placement")}</div>
           <h3 class="placement-title">${placement.levelLabel}</h3>
-          <p class="muted-note">${placement.institutionLabel} · ${t("distanceToExemption")}: <strong>${distanceText}</strong></p>
+          <p class="muted-note"><strong>${t("nextGoal")}:</strong> ${goalText} · <strong>${distanceText}</strong></p>
         </div>
         <div class="placement-target">
-          <span>${t("nextGoal")}</span>
-          <strong>${placement.nextTarget ? placement.nextTarget.label + " " + placement.nextTarget.score : t("exemptionReached")}</strong>
+          <span>${t("confidence")}</span>
+          <strong>${result.confidence}</strong>
         </div>
       </div>
       <div class="score-scale" aria-label="50 to 150 score scale">
@@ -379,8 +361,8 @@ function placementBlock(result) {
         </div>
         <span class="scale-end">150</span>
       </div>
-      <p class="muted-note small-note">${placement.institutionNote}</p>
-      <p class="muted-note small-note">${t("officialDisclaimer")}</p>
+      <p class="muted-note small-note">${placement.message}</p>
+      <p class="muted-note small-note">${placement.note || t("officialDisclaimer")}</p>
     </div>`;
 }
 
