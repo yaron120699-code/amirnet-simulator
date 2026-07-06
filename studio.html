@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Question Studio · PrepLab</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    .studio-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:18px;align-items:start}.form-grid{display:grid;gap:12px}.field{display:grid;gap:7px}.field label{color:var(--muted);font-weight:800;font-size:14px}.field input,.field select,.field textarea{width:100%;border:1px solid var(--line);background:rgba(255,255,255,.07);color:var(--text);border-radius:16px;padding:13px 14px;font:inherit}.field textarea{min-height:96px;resize:vertical;direction:ltr;text-align:left}.studio-output{direction:ltr;text-align:left;white-space:pre-wrap;background:rgba(0,0,0,.24);border:1px solid var(--line);border-radius:22px;padding:18px;min-height:420px;overflow:auto;color:#eaf1ff}.tiny{font-size:13px;color:var(--muted);line-height:1.6}.studio-actions{display:flex;gap:10px;flex-wrap:wrap}@media(max-width:860px){.studio-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body class="rtl">
+  <div class="bg-orb orb-a"></div><div class="bg-orb orb-b"></div>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="index.html"><span class="brand-mark">P</span><span><span class="eyebrow">PrepLab</span><strong>Question Studio</strong></span></a>
+      <div class="top-actions"><a class="ghost-link" href="index.html">חזרה לסימולטור</a><div class="version">v0.9</div></div>
+    </header>
+    <main class="studio-grid">
+      <section class="card">
+        <div class="eyebrow">כלי פנימי</div>
+        <h2 style="font-size:42px">יצירת טיוטות שאלות</h2>
+        <p class="muted-note">זה לא מחליף בדיקה אנושית. הוא מייצר טיוטות מקוריות מתבניות, ואתה עובר עליהן לפני שמכניסים למאגר.</p>
+        <div class="form-grid">
+          <div class="field"><label>סוג שאלה</label><select id="type"><option value="sentenceCompletion">Sentence Completion</option><option value="restatement">Restatement</option></select></div>
+          <div class="field"><label>רמת קושי</label><select id="difficulty"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></div>
+          <div class="field"><label>נושא</label><select id="topic"><option>Science</option><option>Technology</option><option>Environment</option><option>History</option><option>Psychology</option><option>Business</option><option>Education</option><option>Medicine</option></select></div>
+          <div class="field"><label>כמות</label><input id="count" type="number" min="1" max="25" value="8"></div>
+          <div class="field"><label>מספר התחלה ל־ID</label><input id="startId" type="number" min="1" value="201"></div>
+          <div class="studio-actions"><button onclick="generateDrafts()">Generate Drafts</button><button class="secondary" onclick="copyOutput()">Copy JSON</button><button class="secondary" onclick="downloadOutput()">Download</button></div>
+        </div>
+        <p class="tiny">איפה מדביקים? בתוך <b>questions/questionBank.js</b>, במערך המתאים: <b>sentenceCompletion</b> או <b>restatement</b>. לא לשכוח פסיק בין אובייקטים.</p>
+      </section>
+      <section class="card">
+        <div class="eyebrow">Output</div>
+        <div id="output" class="studio-output">לחץ Generate Drafts כדי ליצור טיוטות.</div>
+      </section>
+    </main>
+    <footer><span>Draft generator · review before publishing</span><span>v0.9 UI + Studio</span></footer>
+  </div>
+<script>
+const wordSets = {
+  Science: { nouns:['evidence','experiment','observation','theory','sample','research'], verbs:['confirm','measure','explain','challenge','support','reveal'], adjs:['accurate','preliminary','reliable','complex','unexpected','consistent'] },
+  Technology: { nouns:['device','system','network','software','innovation','signal'], verbs:['improve','detect','process','connect','replace','monitor'], adjs:['efficient','portable','automatic','secure','advanced','reliable'] },
+  Environment: { nouns:['habitat','climate','species','pollution','resource','ecosystem'], verbs:['protect','reduce','restore','threaten','preserve','affect'], adjs:['fragile','renewable','harmful','scarce','sustainable','widespread'] },
+  History: { nouns:['empire','document','reform','tradition','conflict','settlement'], verbs:['establish','preserve','influence','record','oppose','expand'], adjs:['ancient','significant','gradual','political','regional','lasting'] },
+  Psychology: { nouns:['behavior','memory','attention','emotion','response','perception'], verbs:['influence','recall','interpret','avoid','recognize','compare'], adjs:['conscious','emotional','subtle','automatic','social','predictable'] },
+  Business: { nouns:['market','company','demand','investment','strategy','revenue'], verbs:['increase','reduce','expand','estimate','manage','negotiate'], adjs:['profitable','competitive','stable','temporary','financial','domestic'] },
+  Education: { nouns:['curriculum','student','method','skill','assessment','program'], verbs:['evaluate','teach','improve','encourage','require','develop'], adjs:['academic','practical','effective','regular','independent','essential'] },
+  Medicine: { nouns:['treatment','patient','symptom','disease','therapy','diagnosis'], verbs:['prevent','treat','examine','identify','recommend','recover'], adjs:['medical','chronic','beneficial','severe','temporary','common'] }
+};
+const connectors = {
+  1:['because','so','after'], 2:['although','while','however'], 3:['despite','therefore','unless'], 4:['nevertheless','whereas','consequently'], 5:['notwithstanding','moreover','provided that']
+};
+function pick(arr){return arr[Math.floor(Math.random()*arr.length)]}
+function shuffleWithAnswer(options, correct){ const arr=[correct,...options.filter(o=>o!==correct)].slice(0,4); for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]]} return {options:arr, answer:arr.indexOf(correct)}; }
+function sentenceDraft(id,diff,topic){ const set=wordSets[topic]; const noun=pick(set.nouns), verb=pick(set.verbs), adj=pick(set.adjs); const c=pick(connectors[diff]||connectors[3]); const templates=[
+`The researchers delayed their conclusion because the ${noun} was not yet ____ enough.`,
+`Although the first results seemed promising, the team remained ____ until more data was collected.`,
+`The new policy was designed to ____ the problem rather than ignore it.`,
+`Because the resource was considered ____, officials urged citizens to use it carefully.`,
+`The report attempted to ____ the causes of the unusual change.`];
+ let q=pick(templates); let correct = q.includes('enough')?'reliable':q.includes('remained')?'cautious':q.includes('designed')?verb:q.includes('resource')?adj:verb;
+ const distractors=['ordinary','silent','remote','careless','temporary','minor','confused','decorative','popular','narrow','random','formal'];
+ const packed=shuffleWithAnswer(distractors, correct);
+ return { id:`SC-${String(id).padStart(3,'0')}`, type:'sentenceCompletion', difficulty:diff, topic, question:q, options:packed.options, answer:packed.answer, explanation:`The sentence context points to “${correct}”. Review the contrast/cause connector and choose the word that completes the meaning.` };
+}
+function restatementDraft(id,diff,topic){ const set=wordSets[topic]; const noun=pick(set.nouns), verb=pick(set.verbs), adj=pick(set.adjs); const originals=[
+`The study suggests that early evidence may influence later decisions more than researchers expected.`,
+`Although the method is inexpensive, it is not suitable for every situation.`,
+`The committee revised its original plan after new information became available.`,
+`Many experts believe that protecting natural habitats is essential for preserving endangered species.`];
+ const original=pick(originals); const corrects=[
+`According to the study, initial evidence can affect later decisions in a stronger way than was anticipated.`,
+`The method costs little, but it cannot be used appropriately in all cases.`,
+`New information caused the committee to change the plan it had first proposed.`,
+`In the opinion of many experts, endangered species cannot be preserved unless their habitats are protected.`];
+ const idx=originals.indexOf(original); const correct=corrects[idx];
+ const wrong=[`The ${noun} was considered ${adj} because it could ${verb} every problem.`,`Experts rejected the original claim because it was too simple to be useful.`,`The plan was successful only after all earlier information was ignored.`,`The statement argues the opposite of what most researchers now believe.`];
+ const packed=shuffleWithAnswer(wrong, correct);
+ return { id:`RS-${String(id).padStart(3,'0')}`, type:'restatement', difficulty:diff, topic, question:original, options:packed.options, answer:packed.answer, explanation:'The correct option preserves the original meaning without adding or reversing information.' };
+}
+function generateDrafts(){ const type=document.getElementById('type').value; const diff=Number(document.getElementById('difficulty').value); const topic=document.getElementById('topic').value; const count=Math.min(25,Math.max(1,Number(document.getElementById('count').value||1))); let id=Number(document.getElementById('startId').value||1); const drafts=[]; for(let i=0;i<count;i++){ drafts.push(type==='sentenceCompletion'?sentenceDraft(id+i,diff,topic):restatementDraft(id+i,diff,topic)); } document.getElementById('output').textContent = JSON.stringify(drafts,null,2); }
+async function copyOutput(){ await navigator.clipboard.writeText(document.getElementById('output').textContent); alert('Copied'); }
+function downloadOutput(){ const blob=new Blob([document.getElementById('output').textContent],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='question-drafts.json'; a.click(); URL.revokeObjectURL(a.href); }
+</script>
+</body>
+</html>

@@ -1,26 +1,37 @@
 <!doctype html>
-<html lang="en">
+<html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PrepLab Amirnet Simulator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
+  <div class="bg-orb orb-a"></div>
+  <div class="bg-orb orb-b"></div>
   <div class="app-shell">
     <header class="topbar">
-      <div>
-        <div class="eyebrow">PrepLab</div>
-        <h1>Amirnet Simulator</h1>
+      <a class="brand" href="index.html" aria-label="PrepLab home">
+        <span class="brand-mark">P</span>
+        <span>
+          <span class="eyebrow">PrepLab</span>
+          <strong>Amirnet Simulator</strong>
+        </span>
+      </a>
+      <div class="top-actions">
+        <a class="ghost-link" href="studio.html">Question Studio</a>
+        <div class="lang-controls" id="langControls"></div>
+        <div class="version" id="versionBadge">v0.9</div>
       </div>
-      <div class="top-actions"><div class="lang-controls" id="langControls"></div><div class="version" id="versionBadge">v0.7</div></div>
     </header>
 
     <main id="app"></main>
 
     <footer>
       <span>Original practice simulator · Estimated score only</span>
-      <span id="footerVersion">v0.7 Adaptive Blueprint</span>
+      <span id="footerVersion">v0.9 UI + Studio</span>
     </footer>
   </div>
 

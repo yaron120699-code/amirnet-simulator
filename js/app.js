@@ -1,15 +1,15 @@
 const app = document.getElementById("app");
 const blueprint = window.PREPLAB_BLUEPRINT;
 const bank = window.PREPLAB_QUESTIONS;
-document.getElementById("versionBadge").textContent = "v0.8 Bank + No Repeat";
-document.getElementById("footerVersion").textContent = "v0.8 Bank + No Repeat";
+document.getElementById("versionBadge").textContent = "v0.9 UI + Studio";
+document.getElementById("footerVersion").textContent = "v0.9 UI + Studio";
 
 const I18N = {
   en: {
     dir: "ltr",
-    publicBeta: "Public beta engine",
-    headline: "Adaptive Amirnet-style practice",
-    intro: "A first public version that builds a test from a blueprint: sentence completion, restatement, and reading comprehension as part of the score. All content is original and the score is an estimate only.",
+    publicBeta: "Practice beta",
+    headline: "A cleaner Amirnet simulation, built to feel focused",
+    intro: "Start a timed or untimed adaptive simulation. The test includes sentence completion, restatement, and reading comprehension. Questions stay in English; the interface can be Hebrew or English.",
     startFull: "Start Full Simulation",
     quick: "Quick Simulation",
     untimed: "Untimed mode",
@@ -57,9 +57,9 @@ const I18N = {
   },
   he: {
     dir: "rtl",
-    publicBeta: "גרסת בטא להתנסות",
-    headline: "סימולציית אמירנט אדפטיבית",
-    intro: "גרסה ראשונית שמרכיבה מבחן לפי מבנה אמירנט: השלמת משפטים, ניסוח מחדש וקטעי קריאה. כל התוכן מקורי, והציון הוא אומדן לתרגול בלבד.",
+    publicBeta: "גרסת התנסות",
+    headline: "סימולציית אמירנט נקייה, אדפטיבית ונוחה",
+    intro: "בחר סימולציה עם זמן או בלי זמן. המבחן כולל השלמת משפטים, ניסוח מחדש והבנת הנקרא. השאלות נשארות באנגלית, והממשק יכול להיות בעברית או באנגלית.",
     startFull: "התחלת סימולציה מלאה",
     quick: "סימולציה קצרה",
     untimed: "ללא הגבלת זמן",
@@ -179,6 +179,7 @@ function renderHome() {
         <div class="actions">
           <button onclick="startExam('full')">${t("startFull")}</button>
           <button class="secondary" onclick="startExam('quick')">${t("quick")}</button>
+          <a class="button-link" href="studio.html">Question Studio</a>
         </div>
         <label class="toggle"><input id="untimed" type="checkbox" /> ${t("untimed")}</label>
       </div>
