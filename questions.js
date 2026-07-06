@@ -1829,4 +1829,186 @@ window.QUESTION_BANK = [
     "ex": "The successful campaign adapted to local customs.",
     "passage": "The company’s first attempt to enter the international market failed because it simply translated its advertisements. Its later campaign succeeded after it adapted images and messages to local customs."
   }
+,
+{
+  "id": 121,
+  "type": "Reading Comprehension",
+  "skill": "main idea",
+  "difficulty": 3,
+  "passageId": "urban_bees_001",
+  "passageTitle": "Urban Bees",
+  "q": "What is the main purpose of the passage?",
+  "a": [
+    "To explain why bees can matter in urban environments",
+    "To argue that farms are harmful to all bee species",
+    "To compare several methods of producing honey",
+    "To show that cities are naturally perfect for wildlife"
+  ],
+  "c": 0,
+  "ex": "The passage explains how bees live in cities, what threatens them, and why protecting them matters.",
+  "passage": "In recent years, several large cities have begun to treat bees as unexpected partners in urban life. Although bees are often associated with farms and wild fields, many species can survive surprisingly well in cities. Rooftop gardens, public parks, balcony plants, and even small patches of weeds provide them with a steady supply of flowers. In some cases, urban bees may actually find more variety in the city than in areas dominated by a single crop.\n\nThis does not mean that cities are perfect habitats. Air pollution, heat, pesticides, and the loss of nesting places can all threaten bee populations. However, city planners and residents can reduce these risks by planting native flowers, avoiding unnecessary chemical sprays, and leaving small areas of soil or wood where bees can nest. Such steps are not only useful for insects. They can also make neighborhoods greener, cooler, and more pleasant for people.\n\nScientists who study urban bees argue that protecting them is not merely an environmental gesture. Bees support the growth of many plants by moving pollen from one flower to another. When bee populations decline, local gardens and green spaces may become less productive and less diverse. For this reason, some researchers see urban beekeeping and bee-friendly planting as part of a broader effort to design healthier cities."
+},
+{
+  "id": 122,
+  "type": "Reading Comprehension",
+  "skill": "detail",
+  "difficulty": 2,
+  "passageId": "urban_bees_001",
+  "passageTitle": "Urban Bees",
+  "q": "According to the passage, what can provide bees with flowers in cities?",
+  "a": [
+    "Rooftop gardens, parks, balcony plants, and weeds",
+    "Only large agricultural fields outside the city",
+    "Air pollution and chemical sprays",
+    "Nesting boxes used by birds"
+  ],
+  "c": 0,
+  "ex": "The first paragraph lists rooftop gardens, parks, balcony plants, and weeds as flower sources.",
+  "passage": "In recent years, several large cities have begun to treat bees as unexpected partners in urban life. Although bees are often associated with farms and wild fields, many species can survive surprisingly well in cities. Rooftop gardens, public parks, balcony plants, and even small patches of weeds provide them with a steady supply of flowers. In some cases, urban bees may actually find more variety in the city than in areas dominated by a single crop.\n\nThis does not mean that cities are perfect habitats. Air pollution, heat, pesticides, and the loss of nesting places can all threaten bee populations. However, city planners and residents can reduce these risks by planting native flowers, avoiding unnecessary chemical sprays, and leaving small areas of soil or wood where bees can nest. Such steps are not only useful for insects. They can also make neighborhoods greener, cooler, and more pleasant for people.\n\nScientists who study urban bees argue that protecting them is not merely an environmental gesture. Bees support the growth of many plants by moving pollen from one flower to another. When bee populations decline, local gardens and green spaces may become less productive and less diverse. For this reason, some researchers see urban beekeeping and bee-friendly planting as part of a broader effort to design healthier cities."
+},
+{
+  "id": 123,
+  "type": "Reading Comprehension",
+  "skill": "inference",
+  "difficulty": 4,
+  "passageId": "urban_bees_001",
+  "passageTitle": "Urban Bees",
+  "q": "It can be inferred that an area dominated by a single crop may be less helpful to bees because it:",
+  "a": [
+    "offers less variety of flowers",
+    "contains too many different plants",
+    "is usually cooler than a city",
+    "has no connection to pollination"
+  ],
+  "c": 0,
+  "ex": "The passage says urban bees may find more variety than in areas dominated by one crop.",
+  "passage": "In recent years, several large cities have begun to treat bees as unexpected partners in urban life. Although bees are often associated with farms and wild fields, many species can survive surprisingly well in cities. Rooftop gardens, public parks, balcony plants, and even small patches of weeds provide them with a steady supply of flowers. In some cases, urban bees may actually find more variety in the city than in areas dominated by a single crop.\n\nThis does not mean that cities are perfect habitats. Air pollution, heat, pesticides, and the loss of nesting places can all threaten bee populations. However, city planners and residents can reduce these risks by planting native flowers, avoiding unnecessary chemical sprays, and leaving small areas of soil or wood where bees can nest. Such steps are not only useful for insects. They can also make neighborhoods greener, cooler, and more pleasant for people.\n\nScientists who study urban bees argue that protecting them is not merely an environmental gesture. Bees support the growth of many plants by moving pollen from one flower to another. When bee populations decline, local gardens and green spaces may become less productive and less diverse. For this reason, some researchers see urban beekeeping and bee-friendly planting as part of a broader effort to design healthier cities."
+},
+{
+  "id": 124,
+  "type": "Reading Comprehension",
+  "skill": "vocabulary in context",
+  "difficulty": 3,
+  "passageId": "urban_bees_001",
+  "passageTitle": "Urban Bees",
+  "q": "In the context of the passage, the word \"gesture\" most nearly means:",
+  "a": [
+    "symbolic action",
+    "quick movement",
+    "legal document",
+    "scientific instrument"
+  ],
+  "c": 0,
+  "ex": "Here, gesture means an action that expresses concern or intention.",
+  "passage": "In recent years, several large cities have begun to treat bees as unexpected partners in urban life. Although bees are often associated with farms and wild fields, many species can survive surprisingly well in cities. Rooftop gardens, public parks, balcony plants, and even small patches of weeds provide them with a steady supply of flowers. In some cases, urban bees may actually find more variety in the city than in areas dominated by a single crop.\n\nThis does not mean that cities are perfect habitats. Air pollution, heat, pesticides, and the loss of nesting places can all threaten bee populations. However, city planners and residents can reduce these risks by planting native flowers, avoiding unnecessary chemical sprays, and leaving small areas of soil or wood where bees can nest. Such steps are not only useful for insects. They can also make neighborhoods greener, cooler, and more pleasant for people.\n\nScientists who study urban bees argue that protecting them is not merely an environmental gesture. Bees support the growth of many plants by moving pollen from one flower to another. When bee populations decline, local gardens and green spaces may become less productive and less diverse. For this reason, some researchers see urban beekeeping and bee-friendly planting as part of a broader effort to design healthier cities."
+},
+{
+  "id": 125,
+  "type": "Reading Comprehension",
+  "skill": "purpose",
+  "difficulty": 4,
+  "passageId": "urban_bees_001",
+  "passageTitle": "Urban Bees",
+  "q": "Why does the author mention greener and cooler neighborhoods?",
+  "a": [
+    "To show that helping bees can also benefit people",
+    "To claim that bees are dangerous in warm cities",
+    "To prove that flowers grow only on rooftops",
+    "To argue against planting native flowers"
+  ],
+  "c": 0,
+  "ex": "The second paragraph says bee-friendly steps can also improve neighborhoods for people.",
+  "passage": "In recent years, several large cities have begun to treat bees as unexpected partners in urban life. Although bees are often associated with farms and wild fields, many species can survive surprisingly well in cities. Rooftop gardens, public parks, balcony plants, and even small patches of weeds provide them with a steady supply of flowers. In some cases, urban bees may actually find more variety in the city than in areas dominated by a single crop.\n\nThis does not mean that cities are perfect habitats. Air pollution, heat, pesticides, and the loss of nesting places can all threaten bee populations. However, city planners and residents can reduce these risks by planting native flowers, avoiding unnecessary chemical sprays, and leaving small areas of soil or wood where bees can nest. Such steps are not only useful for insects. They can also make neighborhoods greener, cooler, and more pleasant for people.\n\nScientists who study urban bees argue that protecting them is not merely an environmental gesture. Bees support the growth of many plants by moving pollen from one flower to another. When bee populations decline, local gardens and green spaces may become less productive and less diverse. For this reason, some researchers see urban beekeeping and bee-friendly planting as part of a broader effort to design healthier cities."
+}
+,
+{
+  "id": 201,
+  "type": "Reading Comprehension",
+  "skill": "main idea",
+  "difficulty": 3,
+  "passageId": "modern_libraries_001",
+  "passageTitle": "Modern Libraries",
+  "q": "What is the main purpose of the passage?",
+  "a": [
+    "To explain how libraries have changed their role in modern society",
+    "To argue that printed books should be removed from libraries",
+    "To describe the history of computer technology in schools",
+    "To compare public libraries with private bookstores"
+  ],
+  "c": 0,
+  "ex": "The passage focuses on how libraries have moved beyond only storing books and now serve broader community needs.",
+  "passage": "For much of the twentieth century, public libraries were thought of mainly as quiet rooms filled with books. Their purpose seemed simple: to collect written knowledge and make it available to readers. In recent decades, however, libraries have had to redefine themselves. As more information became available online, some people predicted that libraries would become unnecessary. Instead, many libraries changed their role and became more important to their communities in new ways.\n\nModern libraries often provide access not only to books but also to computers, language courses, job-search assistance, lectures, and children’s programs. In neighborhoods where many families cannot afford private internet service, the library may be the only reliable place to complete schoolwork, apply for jobs, or communicate with public agencies. Librarians, once seen mainly as guardians of shelves, now often act as guides who help people judge the quality of information they find online.\n\nThis transformation does not mean that books have lost their value. On the contrary, many libraries report that printed books remain popular, especially among children and older readers. What has changed is the idea that a library is only a storage place for books. Today, a successful library is more like a public learning center: a space where people can read, study, receive help, and meet others. Its strength lies not in resisting technology, but in using technology while preserving the older belief that knowledge should be shared."
+},
+{
+  "id": 202,
+  "type": "Reading Comprehension",
+  "skill": "detail",
+  "difficulty": 2,
+  "passageId": "modern_libraries_001",
+  "passageTitle": "Modern Libraries",
+  "q": "According to the passage, what did some people predict when more information became available online?",
+  "a": [
+    "That libraries would become unnecessary",
+    "That printed books would become more expensive",
+    "That librarians would stop helping readers",
+    "That public agencies would close"
+  ],
+  "c": 0,
+  "ex": "The first paragraph states that some people predicted libraries would become unnecessary.",
+  "passage": "For much of the twentieth century, public libraries were thought of mainly as quiet rooms filled with books. Their purpose seemed simple: to collect written knowledge and make it available to readers. In recent decades, however, libraries have had to redefine themselves. As more information became available online, some people predicted that libraries would become unnecessary. Instead, many libraries changed their role and became more important to their communities in new ways.\n\nModern libraries often provide access not only to books but also to computers, language courses, job-search assistance, lectures, and children’s programs. In neighborhoods where many families cannot afford private internet service, the library may be the only reliable place to complete schoolwork, apply for jobs, or communicate with public agencies. Librarians, once seen mainly as guardians of shelves, now often act as guides who help people judge the quality of information they find online.\n\nThis transformation does not mean that books have lost their value. On the contrary, many libraries report that printed books remain popular, especially among children and older readers. What has changed is the idea that a library is only a storage place for books. Today, a successful library is more like a public learning center: a space where people can read, study, receive help, and meet others. Its strength lies not in resisting technology, but in using technology while preserving the older belief that knowledge should be shared."
+},
+{
+  "id": 203,
+  "type": "Reading Comprehension",
+  "skill": "inference",
+  "difficulty": 4,
+  "passageId": "modern_libraries_001",
+  "passageTitle": "Modern Libraries",
+  "q": "It can be inferred that libraries are especially important in neighborhoods where:",
+  "a": [
+    "many people do not have reliable internet access at home",
+    "most residents prefer private bookstores",
+    "children are not allowed to read printed books",
+    "public agencies do not use online forms"
+  ],
+  "c": 0,
+  "ex": "The second paragraph says libraries may be the only reliable place for internet-based tasks where families cannot afford private internet service.",
+  "passage": "For much of the twentieth century, public libraries were thought of mainly as quiet rooms filled with books. Their purpose seemed simple: to collect written knowledge and make it available to readers. In recent decades, however, libraries have had to redefine themselves. As more information became available online, some people predicted that libraries would become unnecessary. Instead, many libraries changed their role and became more important to their communities in new ways.\n\nModern libraries often provide access not only to books but also to computers, language courses, job-search assistance, lectures, and children’s programs. In neighborhoods where many families cannot afford private internet service, the library may be the only reliable place to complete schoolwork, apply for jobs, or communicate with public agencies. Librarians, once seen mainly as guardians of shelves, now often act as guides who help people judge the quality of information they find online.\n\nThis transformation does not mean that books have lost their value. On the contrary, many libraries report that printed books remain popular, especially among children and older readers. What has changed is the idea that a library is only a storage place for books. Today, a successful library is more like a public learning center: a space where people can read, study, receive help, and meet others. Its strength lies not in resisting technology, but in using technology while preserving the older belief that knowledge should be shared."
+},
+{
+  "id": 204,
+  "type": "Reading Comprehension",
+  "skill": "vocabulary in context",
+  "difficulty": 3,
+  "passageId": "modern_libraries_001",
+  "passageTitle": "Modern Libraries",
+  "q": "In the context of the passage, the word \"guardians\" most nearly means:",
+  "a": [
+    "protectors or keepers",
+    "professional writers",
+    "young students",
+    "technical machines"
+  ],
+  "c": 0,
+  "ex": "Librarians were once viewed as people who protected and managed shelves of books.",
+  "passage": "For much of the twentieth century, public libraries were thought of mainly as quiet rooms filled with books. Their purpose seemed simple: to collect written knowledge and make it available to readers. In recent decades, however, libraries have had to redefine themselves. As more information became available online, some people predicted that libraries would become unnecessary. Instead, many libraries changed their role and became more important to their communities in new ways.\n\nModern libraries often provide access not only to books but also to computers, language courses, job-search assistance, lectures, and children’s programs. In neighborhoods where many families cannot afford private internet service, the library may be the only reliable place to complete schoolwork, apply for jobs, or communicate with public agencies. Librarians, once seen mainly as guardians of shelves, now often act as guides who help people judge the quality of information they find online.\n\nThis transformation does not mean that books have lost their value. On the contrary, many libraries report that printed books remain popular, especially among children and older readers. What has changed is the idea that a library is only a storage place for books. Today, a successful library is more like a public learning center: a space where people can read, study, receive help, and meet others. Its strength lies not in resisting technology, but in using technology while preserving the older belief that knowledge should be shared."
+},
+{
+  "id": 205,
+  "type": "Reading Comprehension",
+  "skill": "purpose",
+  "difficulty": 4,
+  "passageId": "modern_libraries_001",
+  "passageTitle": "Modern Libraries",
+  "q": "Why does the author mention that printed books remain popular?",
+  "a": [
+    "To show that libraries have changed without completely abandoning their traditional role",
+    "To prove that computers are no longer useful in libraries",
+    "To suggest that only older readers use libraries today",
+    "To explain why language courses are unnecessary"
+  ],
+  "c": 0,
+  "ex": "The author emphasizes that libraries expanded their role, but books still matter.",
+  "passage": "For much of the twentieth century, public libraries were thought of mainly as quiet rooms filled with books. Their purpose seemed simple: to collect written knowledge and make it available to readers. In recent decades, however, libraries have had to redefine themselves. As more information became available online, some people predicted that libraries would become unnecessary. Instead, many libraries changed their role and became more important to their communities in new ways.\n\nModern libraries often provide access not only to books but also to computers, language courses, job-search assistance, lectures, and children’s programs. In neighborhoods where many families cannot afford private internet service, the library may be the only reliable place to complete schoolwork, apply for jobs, or communicate with public agencies. Librarians, once seen mainly as guardians of shelves, now often act as guides who help people judge the quality of information they find online.\n\nThis transformation does not mean that books have lost their value. On the contrary, many libraries report that printed books remain popular, especially among children and older readers. What has changed is the idea that a library is only a storage place for books. Today, a successful library is more like a public learning center: a space where people can read, study, receive help, and meet others. Its strength lies not in resisting technology, but in using technology while preserving the older belief that knowledge should be shared."
+}
 ];

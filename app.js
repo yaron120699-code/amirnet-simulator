@@ -2,9 +2,9 @@ const $ = (s) => document.querySelector(s);
 const app = $('#app');
 
 const MODES = {
-  quick:{label:'סימולציה קצרה', minutes:18, count:16, desc:'אימון מהיר, טוב ליום עמוס.'},
-  full:{label:'סימולציה מלאה', minutes:50, count:32, desc:'דימוי מבחן ארוך יותר עם ציון משוער.'},
-  section:{label:'פרק ממוקד', minutes:12, count:10, desc:'בחר סוג שאלות ותתאמן רק עליו.'}
+  full:{label:'סימולציה ראשונית', minutes:25, count:27, desc:'פרק מלא אחד: 11 השלמת משפטים, 6 ניסוח מחדש, ושני אנסינים.'},
+  quick:{label:'סימולציה קצרה', minutes:15, count:17, desc:'גרסה מהירה: 6 השלמת משפטים, 4 ניסוח מחדש, ואנסין אחד.'},
+  section:{label:'תרגול ממוקד', minutes:12, count:10, desc:'בחר סוג שאלות ותתאמן רק עליו.'}
 };
 
 const state = {
@@ -55,15 +55,15 @@ function home(){
 <div class="wrap">
   <section class="hero">
     <div class="card">
-      <div class="brand"><div class="logo">A</div><span>AMIRNET SIM v0.3</span></div>
-      <h1>סימולציה אדפטיבית ראשונית.</h1>
-      <p class="lead">עונים נכון — רמת השאלות עולה. טועים — הרמה יורדת. בסוף מקבלים ציון משוער 50–150 לפי המסלול, לא רק לפי אחוז הצלחה.</p>
+      <div class="brand"><div class="logo">A</div><span>AMIRNET SIM v0.5</span></div>
+      <h1>גרסת התנסות ראשונית לחברים.</h1>
+      <p class="lead">סימולציה באנגלית לפי מבנה פרק: השלמת משפטים, ניסוח מחדש, ושני אנסינים שמשתקללים בציון. המנוע אדפטיבי והציון הוא אומדן 50–150.</p>
       <div class="actions">
-        <button class="btn" onclick="setup('full')">סימולציה מלאה</button>
+        <button class="btn" onclick="setup('full')">התחל סימולציה</button>
         <button class="btn secondary" onclick="setup('quick')">סימולציה קצרה</button>
-        <button class="btn ghost" onclick="setup('section')">פרק ממוקד</button>
+        <button class="btn ghost" onclick="setup('section')">תרגול ממוקד</button>
       </div>
-      <p class="footerNote">זה מנוע אדפטיבי פנימי שמחקה את הרעיון של אמירנט. הוא לא האלגוריתם הרשמי.</p>
+      <p class="footerNote">גרסת פיילוט: השאלות מקוריות, הציון משוער ואינו ציון רשמי.</p>
     </div>
     <div class="card">
       <h2>מה יש כרגע</h2>
@@ -99,6 +99,61 @@ function setup(mode){
   </div></div>`;
 }
 
+
+function readingGroups(){
+  const groups = {};
+  bank().filter(q => q.type === 'Reading Comprehension' && q.passageId).forEach(q => {
+    groups[q.passageId] ||= [];
+    groups[q.passageId].push(q);
+  });
+  return Object.values(groups).filter(g => g.length >= 5)
+    .map(g => g.sort((a,b)=>String(a.id).localeCompare(String(b.id), undefined, {numeric:true})));
+}
+
+function pickQuestionByType(type){
+  const previousType = state.selectedType;
+  state.selectedType = type;
+  const choices = candidatesNearLevel(state.ability);
+  state.selectedType = previousType;
+  if(!choices.length) return null;
+  const q = shuffle(choices)[0];
+  state.usedIds.add(q.id);
+  return q;
+}
+
+function pickReadingBlock(usedPassages){
+  const groups = readingGroups().filter(g => !usedPassages.has(g[0].passageId));
+  if(!groups.length) return [];
+  const scored = groups.map(g => {
+    const avg = g.reduce((s,q)=>s+q.level,0)/g.length;
+    return {g, score: Math.abs(avg - state.ability)};
+  }).sort((a,b)=>a.score-b.score);
+  const top = scored.slice(0, Math.min(3, scored.length)).map(x=>x.g);
+  const group = shuffle(top)[0];
+  usedPassages.add(group[0].passageId);
+  group.slice(0,5).forEach(q=>state.usedIds.add(q.id));
+  return group.slice(0,5);
+}
+
+function buildStructuredExam(mode){
+  const plan = mode === 'quick'
+    ? [{type:'Sentence Completion', count:6}, {type:'Restatement', count:4}, {type:'Reading', count:1}]
+    : [{type:'Sentence Completion', count:11}, {type:'Restatement', count:6}, {type:'Reading', count:2}];
+  const usedPassages = new Set();
+  const out = [];
+  plan.forEach(block => {
+    if(block.type === 'Reading'){
+      for(let i=0;i<block.count;i++) out.push(...pickReadingBlock(usedPassages));
+    } else {
+      for(let i=0;i<block.count;i++){
+        const q = pickQuestionByType(block.type);
+        if(q) out.push(q);
+      }
+    }
+  });
+  return out;
+}
+
 function start(mode){
   state.mode = mode;
   state.selectedType = $('#qtype')?.value || 'all';
@@ -112,9 +167,25 @@ function start(mode){
   state.untimed = !!$('#untimed')?.checked;
   state.secondsLeft = MODES[mode].minutes * 60;
   clearInterval(state.timer);
-  addNextQuestion();
+  if(mode === 'full' || mode === 'quick') state.questions = buildStructuredExam(mode);
+  else addNextQuestion();
   if(!state.untimed) state.timer = setInterval(tick,1000);
   renderQuestion();
+}
+
+
+function loadReadingPassage(){
+  const groups = {};
+  bank().filter(q => q.type === 'Reading Comprehension' && q.passageId).forEach(q => {
+    groups[q.passageId] ||= [];
+    groups[q.passageId].push(q);
+  });
+  const valid = Object.values(groups).filter(g => g.length >= 4);
+  if(!valid.length) return false;
+  const group = shuffle(valid)[0].sort((a,b)=>String(a.id).localeCompare(String(b.id), undefined, {numeric:true}));
+  state.questions = group.slice(0, MODES[state.mode].count);
+  state.questions.forEach(q=>state.usedIds.add(q.id));
+  return true;
 }
 
 function candidatesNearLevel(target){
@@ -150,14 +221,14 @@ function renderQuestion(){
   const q = state.questions[state.index];
   if(!q){ finish(); return; }
   const ans = state.answers[q.id];
-  const pct = ((state.index)/MODES[state.mode].count)*100;
+  const pct = ((state.index)/state.questions.length)*100;
   app.innerHTML = `<div class="wrap"><div class="card">
-    <div class="topbar"><div class="brand"><div class="logo">A</div><span>${MODES[state.mode].label}</span></div><div style="display:flex;gap:8px;flex-wrap:wrap"><span class="pill">שאלה ${state.index+1}/${MODES[state.mode].count}</span><span class="pill" id="timer">${state.untimed?'ללא זמן':fmt(state.secondsLeft)}</span><span class="pill">רמת שאלה ${q.level}</span><span class="pill">יכולת משוערת ${state.ability.toFixed(1)}</span></div></div>
+    <div class="topbar"><div class="brand"><div class="logo">A</div><span>${MODES[state.mode].label}</span></div><div style="display:flex;gap:8px;flex-wrap:wrap"><span class="pill">שאלה ${state.index+1}/${state.questions.length}</span><span class="pill" id="timer">${state.untimed?'ללא זמן':fmt(state.secondsLeft)}</span><span class="pill">רמת שאלה ${q.level}</span><span class="pill">יכולת משוערת ${state.ability.toFixed(1)}</span></div></div>
     <div class="progress"><div style="width:${pct}%"></div></div>
     <div class="question"><div class="qtype">${q.type} · ${q.skillLabel}</div>${q.passage?`<p class="qtext" style="font-size:18px;background:#fbf8ee;border:1px solid var(--line);padding:18px;border-radius:20px">${q.passage}</p>`:''}<div class="qtext">${q.q}</div>
       <div class="answers">${q.a.map((x,i)=>`<button class="answer ${ans===i?'selected':''}" onclick="choose(${i})"><span class="letter">${String.fromCharCode(65+i)}</span><span>${x}</span></button>`).join('')}</div>
     </div>
-    <div class="nav"><button class="btn secondary" onclick="prev()" ${state.index===0?'disabled':''}>אחורה</button><div style="display:flex;gap:10px"><button class="btn ghost" onclick="finish()">סיים מבחן</button><button class="btn" onclick="next()">${state.index===MODES[state.mode].count-1?'סיום':'הבא'}</button></div></div>
+    <div class="nav"><button class="btn secondary" onclick="prev()" ${state.index===0?'disabled':''}>אחורה</button><div style="display:flex;gap:10px"><button class="btn ghost" onclick="finish()">סיים מבחן</button><button class="btn" onclick="next()">${state.index===state.questions.length-1?'סיום':'הבא'}</button></div></div>
   </div></div>`;
 }
 
@@ -191,7 +262,7 @@ function next(){
     updateAbilityAfterAnswer(q);
   }
   if(state.index < MODES[state.mode].count-1){
-    if(state.index === state.questions.length-1) addNextQuestion();
+    if(state.mode === 'section' && state.index === state.questions.length-1) addNextQuestion();
     state.index++;
     renderQuestion();
   } else finish();
@@ -216,7 +287,7 @@ function calc(){
   const avgAbilityNorm = (avgAbility - 1) / 4;
   let score = Math.round(50 + (weighted*0.55 + finalAbilityNorm*0.30 + avgAbilityNorm*0.15) * 100);
   const unanswered = state.questions.filter(q=>state.answers[q.id]===undefined).length;
-  score = clamp(score - Math.round((unanswered/MODES[state.mode].count)*10), 50, 150);
+  score = clamp(score - Math.round((unanswered/state.questions.length)*10), 50, 150);
   const acc = Math.round((correct/state.questions.length)*100);
   return {score, correct, acc, weighted:Math.round(weighted*100), byType, byLevel, unanswered, finalAbility:state.ability.toFixed(1), avgAbility:avgAbility.toFixed(1)};
 }
