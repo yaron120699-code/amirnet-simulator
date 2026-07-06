@@ -1,5 +1,5 @@
 window.PREPLAB_BLUEPRINT = {
-  version: "v0.9.5 Adaptive Blueprint",
+  version: "v0.9.6 Placement Blueprint",
   examName: "Amirnet Simulation",
   scoreRange: { min: 50, max: 150 },
   timing: {

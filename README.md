@@ -1,69 +1,43 @@
-# PrepLab
+# PrepLab — v0.9.6 Placement Beta
 
-Adaptive Amirnet Simulator
+גרסה זו מוסיפה שכבת **Score Interpretation & Academic Placement** מעל מנוע הבחינה הקיים.
 
----
+## מה חדש
 
-## 🚀 Public Beta
+- מנוע שיבוץ חדש: `js/placement.js`
+- קונפיגורציית מוסדות: `data/institutions.js`
+- בורר מוסד במסך הבית
+- כרטיס תוצאה חדש: רמה משוערת, מרחק מפטור, יעד הבא
+- פס ויזואלי 50→150 עם נקודת הציון וסף פטור
+- הספים אינם hardcoded בתוך `app.js`
+- שמירת מוסד יעד ב־`localStorage`
 
-הפרויקט נמצא כרגע בגרסת בטא ציבורית.
-המטרה היא לאסוף פידבק ולשפר את הסימולטור לפני גרסת 1.0.
+## קבצים חדשים
 
----
+```
+data/institutions.js
+js/placement.js
+```
 
-## Features
+## קבצים שהוחלפו
 
-- ✅ Adaptive blueprint
-- ✅ Estimated score (50–150)
-- ✅ Sentence Completion
-- ✅ Restatement
-- ✅ Reading Comprehension
-- ✅ Hebrew / English UI
-- ✅ No-repeat engine
-- ✅ Mobile support
+```
+index.html
+css/styles.css
+js/app.js
+data/blueprint.js
+```
 
----
+## הערה חשובה
 
-## Roadmap
+השיבוץ הוא הערכה בלבד. מוסדות לימוד יכולים לשנות ספים ושמות קורסים, ולכן יש לאמת כל מוסד לפני שמציגים אותו כמאומת.
 
-- [ ] Expand question bank to 500+
-- [ ] Improve adaptive engine
-- [ ] Statistics dashboard
-- [ ] Admin Panel
-- [ ] Question Studio
-- [ ] User accounts
+## בדיקות אחרי דיפלוי
 
----
-
-# Changelog
-
-## v0.9.3 Public Beta
-
-### Added
-- Expanded question bank
-- Adaptive blueprint
-- Reading passages
-- No-repeat mechanism
-- Hebrew / English interface
-
-### Changed
-- Improved home screen
-- Refined scoring
-- Better mobile layout
-
-### Fixed
-- Empty submission score
-- Score calibration
-- Deployment issues
-
----
-
-## Known Issues
-
-- Question bank still needs expansion
-- Adaptive algorithm requires more calibration
-- UI polish is still in progress
-
----
-
-© 2026 PrepLab
+- [ ] במסך הבית מופיע בורר מוסד יעד
+- [ ] הבחירה נשמרת ברענון
+- [ ] בסיום מבחן מופיעה רמה משוערת
+- [ ] ציון וטווח נשארים בין 50–150
+- [ ] פס 50→150 מוצג נכון גם בעברית וגם באנגלית
+- [ ] שינוי שפה מתרגם את כרטיס השיבוץ
+- [ ] המנוע האדפטיבי ממשיך לעבוד

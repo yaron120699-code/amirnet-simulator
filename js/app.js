@@ -1,8 +1,8 @@
 const app = document.getElementById("app");
 const blueprint = window.PREPLAB_BLUEPRINT;
 const bank = window.PREPLAB_QUESTIONS;
-document.getElementById("versionBadge").textContent = "v0.9.6 Public Beta";
-document.getElementById("footerVersion").textContent = "v0.9.6 Public Beta";
+document.getElementById("versionBadge").textContent = "v0.9.6 Placement Beta";
+document.getElementById("footerVersion").textContent = "v0.9.6 Placement Beta";
 
 const I18N = {
   en: {
@@ -20,12 +20,21 @@ const I18N = {
     adaptive: "adaptive",
     score: "Score",
     clamped: "50–150",
+    targetInstitution: "Target institution",
+    placement: "Estimated placement",
+    distanceToExemption: "Distance to exemption",
+    pointsLeft: "points left",
+    exemptionReached: "Exemption reached",
+    nextGoal: "Next goal",
+    officialDisclaimer: "This placement is an estimate. Official placement and course requirements are determined only by the institution and may change.",
+    institutionStatusDraft: "Draft mapping",
     question: "Question",
     untimedShort: "Untimed",
     difficulty: "Difficulty",
     currentAbility: "Current ability",
     back: "Back",
     noBack: "You cannot return to previous questions during the simulation, similar to the real Amirnet exam.",
+    skip: "Skip",
     next: "Next",
     submit: "Submit",
     estimatedScore: "Estimated Amirnet Score",
@@ -70,6 +79,14 @@ const I18N = {
     adaptive: "אדפטיבית",
     score: "ציון",
     clamped: "50–150",
+    targetInstitution: "מוסד יעד",
+    placement: "רמה משוערת",
+    distanceToExemption: "מרחק מפטור",
+    pointsLeft: "נקודות חסרות",
+    exemptionReached: "הגעת לפטור",
+    nextGoal: "היעד הבא",
+    officialDisclaimer: "השיבוץ הוא הערכה בלבד. השיבוץ הרשמי ודרישות הקורסים נקבעים רק על ידי מוסד הלימודים ועשויים להשתנות.",
+    institutionStatusDraft: "מיפוי טיוטה",
     question: "שאלה",
     untimedShort: "ללא זמן",
     difficulty: "רמת קושי",
@@ -121,7 +138,8 @@ let state = {
   secondsLeft: 0,
   timer: null,
   startedAt: null,
-  lang: localStorage.getItem("preplabLang") || "he"
+  lang: localStorage.getItem("preplabLang") || "he",
+  institution: localStorage.getItem("preplabInstitution") || "general"
 };
 
 function getRecentQuestionIds() {
@@ -159,6 +177,19 @@ function setLanguage(lang) {
 }
 window.setLanguage = setLanguage;
 
+function setInstitution(id) {
+  state.institution = id || "general";
+  localStorage.setItem("preplabInstitution", state.institution);
+}
+window.setInstitution = setInstitution;
+
+function institutionOptions() {
+  if (!window.PrepLabPlacement) return "";
+  return PrepLabPlacement.listInstitutions(state.lang)
+    .map(inst => `<option value="${inst.id}" ${state.institution === inst.id ? "selected" : ""}>${inst.label}${inst.status === "draft" ? " · " + t("institutionStatusDraft") : ""}</option>`)
+    .join("");
+}
+
 function applyLanguageChrome() {
   document.documentElement.lang = state.lang;
   document.documentElement.dir = t("dir");
@@ -184,6 +215,7 @@ function renderHome() {
           <button class="secondary" onclick="startExam('quick')">${t("quick")}</button>
         </div>
         <label class="toggle"><input id="untimed" type="checkbox" /> ${t("untimed")}</label>
+        <label class="field-label">${t("targetInstitution")}<select class="institution-select" onchange="setInstitution(this.value)">${institutionOptions()}</select></label>
       </div>
       <div class="card">
         <div class="eyebrow">${t("blueprint")}</div>
@@ -205,7 +237,6 @@ function startExam(mode) {
   state.answers = [];
   state.index = 0;
   state.processedCount = 0;
-  state.telemetryLogged = false;
   state.ability = blueprint.adaptive.startAbility;
   state.abilityHistory = [state.ability];
   state.startedAt = Date.now();
@@ -304,21 +335,6 @@ function finishExam(keepScreen = false) {
   const plannedTotal = state.session ? state.session.plannedTotal : state.items.length;
   const result = PrepLabScoring.calculate(state.items, state.answers, state.abilityHistory, blueprint, plannedTotal);
   saveRecentQuestionIds(state.items);
-  // Calibration telemetry (anonymous, local). Guarded so a language
-  // switch on the results screen never double-counts, and wrapped so
-  // telemetry can never break the exam flow.
-  if (window.PrepLabTelemetry && !state.telemetryLogged) {
-    try {
-      PrepLabTelemetry.recordSimulation({
-        items: state.items,
-        answers: state.answers,
-        abilityHistory: state.abilityHistory,
-        result,
-        mode: state.mode
-      });
-    } catch (e) {}
-    state.telemetryLogged = true;
-  }
   renderResults(result);
 }
 
@@ -331,6 +347,41 @@ function abilityPath() {
   const points = state.abilityHistory.filter((_, i) => i % Math.ceil(state.abilityHistory.length / 8) === 0).slice(0, 8);
   if (!points.includes(state.abilityHistory[state.abilityHistory.length - 1])) points.push(state.abilityHistory[state.abilityHistory.length - 1]);
   return points.map(v => `<span>${Math.round(v * 10) / 10}</span>`).join(`<b>→</b>`);
+}
+
+
+function placementBlock(result) {
+  if (!window.PrepLabPlacement) return "";
+  const placement = PrepLabPlacement.classify(result.score, state.institution, state.lang);
+  const pos = Math.max(0, Math.min(100, placement.progress));
+  const goalPos = Math.max(0, Math.min(100, ((placement.exemptionScore - 50) / 100) * 100));
+  const distanceText = placement.pointsToExemption > 0
+    ? `${placement.pointsToExemption} ${t("pointsLeft")}`
+    : t("exemptionReached");
+  return `
+    <div class="placement-card">
+      <div class="placement-main">
+        <div>
+          <div class="eyebrow">${t("placement")}</div>
+          <h3 class="placement-title">${placement.levelLabel}</h3>
+          <p class="muted-note">${placement.institutionLabel} · ${t("distanceToExemption")}: <strong>${distanceText}</strong></p>
+        </div>
+        <div class="placement-target">
+          <span>${t("nextGoal")}</span>
+          <strong>${placement.nextTarget ? placement.nextTarget.label + " " + placement.nextTarget.score : t("exemptionReached")}</strong>
+        </div>
+      </div>
+      <div class="score-scale" aria-label="50 to 150 score scale">
+        <span class="scale-end">50</span>
+        <div class="scale-track">
+          <span class="scale-goal" style="left:${goalPos}%"></span>
+          <span class="scale-dot" style="left:${pos}%"></span>
+        </div>
+        <span class="scale-end">150</span>
+      </div>
+      <p class="muted-note small-note">${placement.institutionNote}</p>
+      <p class="muted-note small-note">${t("officialDisclaimer")}</p>
+    </div>`;
 }
 
 function renderResults(result) {
@@ -357,6 +408,7 @@ function renderResults(result) {
         <div class="stat">${t("accuracy")}<strong>${result.accuracy}%</strong></div>
         <div class="stat">${t("confidence")}<strong>${result.confidence}</strong></div>
       </div>
+      ${placementBlock(result)}
       <div class="stats-grid">
         <div class="stat">${t("answered")}<strong>${result.answered}</strong></div>
         <div class="stat">${t("unanswered")}<strong>${result.unanswered}</strong></div>

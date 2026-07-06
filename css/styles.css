@@ -626,3 +626,126 @@ footer {
   .toggle { width: 100%; }
   footer { flex-direction: column; gap: 4px; }
 }
+
+/* ---------- Institution / placement ---------- */
+.field-label {
+  display: grid;
+  gap: 7px;
+  color: var(--ink-soft);
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 14px;
+  max-width: 320px;
+}
+
+.institution-select {
+  width: 100%;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-md);
+  background: var(--card);
+  color: var(--ink);
+  min-height: 44px;
+  padding: 9px 12px;
+  font: inherit;
+  font-size: 14px;
+}
+
+.placement-card {
+  margin: 18px 0;
+  padding: 18px;
+  border: 1px solid var(--accent-line);
+  background: var(--accent-soft);
+  border-radius: var(--r-lg);
+}
+
+.placement-main {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.placement-title {
+  margin: 4px 0 6px;
+  font-family: var(--font-display);
+  font-size: clamp(24px, 4vw, 34px);
+  color: var(--accent-ink);
+}
+
+.placement-target {
+  min-width: 150px;
+  border: 1px solid var(--accent-line);
+  background: var(--card);
+  border-radius: var(--r-md);
+  padding: 12px 14px;
+  text-align: start;
+}
+
+.placement-target span {
+  display: block;
+  color: var(--ink-soft);
+  font-size: 12px;
+  font-weight: 650;
+  margin-bottom: 4px;
+}
+
+.placement-target strong {
+  display: block;
+  color: var(--ink);
+  font-size: 16px;
+}
+
+.score-scale {
+  direction: ltr;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 10px;
+  align-items: center;
+  margin: 16px 0 10px;
+}
+
+.scale-end {
+  color: var(--ink-faint);
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.scale-track {
+  position: relative;
+  height: 7px;
+  background: var(--line-strong);
+  border-radius: 99px;
+}
+
+.scale-dot {
+  position: absolute;
+  top: 50%;
+  width: 17px;
+  height: 17px;
+  border-radius: 99px;
+  background: var(--accent);
+  border: 3px solid var(--card);
+  box-shadow: 0 0 0 1px var(--accent);
+  transform: translate(-50%, -50%);
+}
+
+.scale-goal {
+  position: absolute;
+  top: -4px;
+  width: 1px;
+  height: 15px;
+  background: var(--ink-soft);
+  opacity: 0.55;
+}
+
+.small-note {
+  font-size: 12.5px;
+  margin-top: 6px;
+}
+
+@media (max-width: 760px) {
+  .field-label { max-width: 100%; }
+  .placement-main { flex-direction: column; }
+  .placement-target { width: 100%; }
+}
