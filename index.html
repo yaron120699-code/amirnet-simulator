@@ -1,14 +1,33 @@
 <!doctype html>
-<html lang="he" dir="rtl">
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Amirnet Simulation v0.1</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PrepLab Amirnet Simulator</title>
+  <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
-  <main id="app"></main>
-  <script src="questions.js"></script>
-  <script src="app.js"></script>
+  <div class="app-shell">
+    <header class="topbar">
+      <div>
+        <div class="eyebrow">PrepLab</div>
+        <h1>Amirnet Simulator</h1>
+      </div>
+      <div class="version" id="versionBadge">v0.7</div>
+    </header>
+
+    <main id="app"></main>
+
+    <footer>
+      <span>Original practice simulator · Estimated score only</span>
+      <span id="footerVersion">v0.7 Adaptive Blueprint</span>
+    </footer>
+  </div>
+
+  <script src="data/blueprint.js"></script>
+  <script src="questions/questionBank.js"></script>
+  <script src="js/scoring.js"></script>
+  <script src="js/adaptiveEngine.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>

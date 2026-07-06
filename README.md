@@ -1,22 +1,25 @@
-# Amirnet Simulator v0.5 Public Pilot
+# PrepLab Amirnet Simulator — v0.7 Adaptive Blueprint
 
-גרסת פיילוט ראשונית לשיתוף עם חברים.
+This version introduces a cleaner exam engine:
 
-## מה יש בגרסה
-- סימולציה מובנית לפי מבנה פרק: 11 Sentence Completion, 6 Restatement, 2 Reading passages עם 5 שאלות לכל קטע.
-- סימולציה קצרה.
-- תרגול ממוקד.
-- מצב עם זמן או ללא זמן.
-- מנוע אדפטיבי בסיסי: תשובה נכונה מעלה את רמת היכולת, טעות מורידה אותה.
-- ציון משוער בטווח 50–150.
-- פירוט תוצאות לפי סוג שאלה ורמת קושי.
+- Blueprint-driven exam structure
+- Sentence Completion → Restatement → Reading Comprehension
+- Reading passages embedded inside the simulation and included in scoring
+- Adaptive ability estimate from 1–5
+- Score clamped to 50–150
+- Empty submission = 50
+- Version badge visible in the UI
 
-## חשוב
-השאלות מקוריות. הציון הוא אומדן פנימי בלבד ואינו ציון רשמי של המרכז הארצי.
+## Files
 
+- `index.html`
+- `css/styles.css`
+- `data/blueprint.js`
+- `questions/questionBank.js`
+- `js/adaptiveEngine.js`
+- `js/scoring.js`
+- `js/app.js`
 
-## v0.6.1 Scoring Clamp
-- הציון תמיד חסום לטווח 50–150.
-- גם טווח ההערכה חסום לטווח 50–150.
-- הגשה ריקה מחזירה 50 וטווח 50–50.
-- שאלות ריקות נספרות כטעויות.
+## Deploy
+
+Upload all files and folders to the GitHub repository root. Vercel should redeploy automatically.
