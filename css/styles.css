@@ -53,3 +53,32 @@ footer { margin-top:auto; padding:18px 0; display:flex; justify-content:space-be
   .topbar { align-items:flex-start; gap:12px; }
   footer { flex-direction:column; }
 }
+
+/* v0.7.1 GUI polish + language toggle */
+.top-actions { display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end; }
+.lang-controls { display:flex; gap:6px; padding:4px; border:1px solid var(--line); background:var(--panel); border-radius:999px; }
+.lang-btn { padding:7px 10px; border-radius:999px; font-size:12px; color:var(--muted); background:transparent; border:0; }
+.lang-btn.active { background:var(--accent); color:#07101d; }
+.mini-grid { grid-template-columns:1fr 1fr; }
+.score-number { font-size:64px; margin:8px 0; letter-spacing:-0.06em; }
+.muted-note { color:var(--muted); line-height:1.6; }
+.metric-list { gap:14px; }
+.metric-row { border:1px solid var(--line); border-radius:18px; padding:14px; background:rgba(255,255,255,0.06); }
+.metric-row > div:first-child { display:flex; justify-content:space-between; gap:12px; align-items:center; margin-bottom:8px; color:var(--muted); }
+.metric-row strong { color:var(--text); }
+.progress.slim { height:8px; margin:0; }
+.ability-path { display:flex; flex-wrap:wrap; align-items:center; gap:10px; padding:14px; border:1px solid var(--line); background:rgba(255,255,255,0.06); border-radius:18px; color:var(--muted); }
+.ability-path span { color:var(--text); font-weight:800; background:rgba(255,255,255,0.08); border:1px solid var(--line); border-radius:999px; padding:6px 10px; }
+.ability-path b { color:var(--accent); }
+.english-content { direction:ltr; text-align:left; }
+.review-question { margin-top:10px; color:#e9efff; font-weight:700; }
+body.rtl .topbar { direction:ltr; }
+body.rtl .hero, body.rtl .card, body.rtl footer { direction:rtl; }
+body.rtl .option { text-align:left; }
+body.rtl .exam-head, body.rtl .metric-row > div:first-child { direction:rtl; }
+@media (max-width: 760px) {
+  .topbar { flex-direction:column; }
+  .top-actions { justify-content:flex-start; }
+  .score-number { font-size:54px; }
+  .metric-row > div:first-child { flex-direction:column; align-items:flex-start; }
+}

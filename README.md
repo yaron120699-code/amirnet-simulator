@@ -1,25 +1,15 @@
-# PrepLab Amirnet Simulator — v0.7 Adaptive Blueprint
+# PrepLab Amirnet Simulator — v0.7.1 GUI + Language
 
-This version introduces a cleaner exam engine:
+Public beta update.
 
-- Blueprint-driven exam structure
-- Sentence Completion → Restatement → Reading Comprehension
-- Reading passages embedded inside the simulation and included in scoring
-- Adaptive ability estimate from 1–5
-- Score clamped to 50–150
-- Empty submission = 50
-- Version badge visible in the UI
+## New in v0.7.1
+- Hebrew / English interface toggle.
+- Language choice is saved in localStorage.
+- Questions and answer options stay in English.
+- Result page now includes progress bars by question type and difficulty.
+- Added ability path display.
+- Clearer score explanation.
 
-## Files
-
-- `index.html`
-- `css/styles.css`
-- `data/blueprint.js`
-- `questions/questionBank.js`
-- `js/adaptiveEngine.js`
-- `js/scoring.js`
-- `js/app.js`
-
-## Deploy
-
-Upload all files and folders to the GitHub repository root. Vercel should redeploy automatically.
+## Upload instructions
+Upload all files and folders to the root of the GitHub repository.
+Do not upload the ZIP itself.
