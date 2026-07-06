@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>PrepLab · Vocabulary Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Heebo:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="rtl">
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="index.html" aria-label="PrepLab home">
+        <span class="brand-mark">P</span>
+        <span><span class="eyebrow">Internal</span><strong>Vocabulary Studio</strong></span>
+      </a>
+      <div class="top-actions"><div class="version">v0.9.8</div></div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="card">
+          <div class="eyebrow">Vocabulary Engine</div>
+          <h2>מאגר שפה פנימי</h2>
+          <p>בחר מילה מתוך המאגר, צור טיוטות שאלות, העתק JSON, ועבור עליהן לפני שהן נכנסות לבנק השאלות.</p>
+          <label class="toggle" style="width:100%">חיפוש מילה / תרגום / נושא
+            <input id="searchInput" type="text" placeholder="abolish / לבטל / Science" style="width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;font-family:inherit;margin-inline-start:10px" />
+          </label>
+          <div class="actions">
+            <button onclick="renderWords()">חפש</button>
+            <button class="secondary" onclick="copySelectedBundle()">העתק טיוטות JSON</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="eyebrow">Stats</div>
+          <div id="stats" class="stats-grid mini-grid"></div>
+        </div>
+      </section>
+
+      <section class="card" style="margin-top:20px">
+        <h3>מילים</h3>
+        <div id="wordList" class="review metric-list"></div>
+      </section>
+
+      <section class="card" style="margin-top:20px">
+        <h3>טיוטות</h3>
+        <pre id="draftOutput" style="white-space:pre-wrap;direction:ltr;text-align:left;background:var(--card-soft);border:1px solid var(--line);border-radius:12px;padding:16px;overflow:auto;max-height:460px"></pre>
+      </section>
+    </main>
+
+    <footer><span>Hidden internal tool · Human review required</span><span>v0.9.8</span></footer>
+  </div>
+
+  <script src="data/vocabularyBank.js"></script>
+  <script src="js/vocabularyEngine.js"></script>
+  <script>
+    let selectedWord = null;
+    function renderStats() {
+      const s = PrepLabVocabularyEngine.stats();
+      document.getElementById('stats').innerHTML = `
+        <div class="stat">מילים<strong>${s.total}</strong><span>במאגר</span></div>
+        <div class="stat">רמה 3–5<strong>${(s.byDifficulty[3]||0)+(s.byDifficulty[4]||0)+(s.byDifficulty[5]||0)}</strong><span>רלוונטיות למבחן</span></div>
+        <div class="stat">רמה 4<strong>${s.byDifficulty[4]||0}</strong><span>מתקדמות</span></div>
+        <div class="stat">רמה 5<strong>${s.byDifficulty[5]||0}</strong><span>קשות</span></div>`;
+    }
+    function renderWords() {
+      const q = document.getElementById('searchInput').value || '';
+      const words = PrepLabVocabularyEngine.search(q).slice(0, 80);
+      document.getElementById('wordList').innerHTML = words.map(w => `
+        <button class="option" onclick="selectWord('${w.id}')">
+          <span class="option-num">${w.difficulty}</span>
+          <span><strong>${w.word}</strong> · ${w.translation}<br><small>${w.topic} · ${w.partOfSpeech} · ${w.status}</small></span>
+        </button>`).join('');
+    }
+    function selectWord(id) {
+      selectedWord = (window.PREPLAB_VOCABULARY || []).find(w => w.id === id);
+      const bundle = PrepLabVocabularyEngine.generateBundle(selectedWord);
+      document.getElementById('draftOutput').textContent = JSON.stringify(bundle, null, 2);
+    }
+    async function copySelectedBundle() {
+      const txt = document.getElementById('draftOutput').textContent;
+      if (!txt.trim()) return alert('בחר מילה קודם');
+      await navigator.clipboard.writeText(txt);
+      alert('הועתק');
+    }
+    renderStats();
+    renderWords();
+  </script>
+</body>
+</html>

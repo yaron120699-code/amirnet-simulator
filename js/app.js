@@ -1,8 +1,8 @@
 const app = document.getElementById("app");
 const blueprint = window.PREPLAB_BLUEPRINT;
 const bank = window.PREPLAB_QUESTIONS;
-document.getElementById("versionBadge").textContent = "v0.9.7 Level Beta";
-document.getElementById("footerVersion").textContent = "v0.9.7 Level Beta";
+document.getElementById("versionBadge").textContent = "v0.9.8 Vocabulary Engine";
+document.getElementById("footerVersion").textContent = "v0.9.8 Vocabulary Engine";
 
 const I18N = {
   en: {
