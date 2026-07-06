@@ -1,8 +1,8 @@
 const app = document.getElementById("app");
 const blueprint = window.PREPLAB_BLUEPRINT;
 const bank = window.PREPLAB_QUESTIONS;
-document.getElementById("versionBadge").textContent = "v0.7.2 Hebrew Polish";
-document.getElementById("footerVersion").textContent = "v0.7.2 Hebrew Polish";
+document.getElementById("versionBadge").textContent = "v0.8 Bank + No Repeat";
+document.getElementById("footerVersion").textContent = "v0.8 Bank + No Repeat";
 
 const I18N = {
   en: {
@@ -121,6 +121,30 @@ let state = {
   lang: localStorage.getItem("preplabLang") || "he"
 };
 
+function getRecentQuestionIds() {
+  try {
+    const raw = JSON.parse(localStorage.getItem("preplabRecentQuestionIds") || "[]");
+    return new Set(Array.isArray(raw) ? raw.slice(-160) : []);
+  } catch (e) {
+    return new Set();
+  }
+}
+
+function saveRecentQuestionIds(items) {
+  try {
+    const existing = JSON.parse(localStorage.getItem("preplabRecentQuestionIds") || "[]");
+    const ids = items.flatMap(item => [item.id, item.parentPassageId].filter(Boolean));
+    const merged = [...existing, ...ids];
+    const deduped = [];
+    for (const id of merged) {
+      const idx = deduped.indexOf(id);
+      if (idx !== -1) deduped.splice(idx, 1);
+      deduped.push(id);
+    }
+    localStorage.setItem("preplabRecentQuestionIds", JSON.stringify(deduped.slice(-160)));
+  } catch (e) {}
+}
+
 function t(key) { return I18N[state.lang][key] || I18N.en[key] || key; }
 function setLanguage(lang) {
   state.lang = lang;
@@ -173,7 +197,7 @@ function renderHome() {
 function startExam(mode) {
   state.mode = mode;
   state.untimed = document.getElementById("untimed")?.checked || false;
-  state.items = PrepLabAdaptiveEngine.buildExam(mode, blueprint, bank);
+  state.items = PrepLabAdaptiveEngine.buildExam(mode, blueprint, bank, getRecentQuestionIds());
   state.answers = Array(state.items.length).fill(null);
   state.index = 0;
   state.ability = blueprint.adaptive.startAbility;
@@ -254,6 +278,7 @@ function finishExam(keepScreen = false) {
     state.abilityHistory.push(state.ability);
   }
   const result = PrepLabScoring.calculate(state.items, state.answers, state.abilityHistory, blueprint);
+  saveRecentQuestionIds(state.items);
   renderResults(result);
 }
 

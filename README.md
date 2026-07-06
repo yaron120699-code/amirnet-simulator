@@ -1,3 +1,1 @@
-# Amirnet Simulator v0.7.2
-
-Hebrew UI polish and copy fixes.
+PrepLab Amirnet Simulator v0.8 - expanded question bank and no-repeat engine.
