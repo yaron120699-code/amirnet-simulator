@@ -1,8 +1,8 @@
 const app = document.getElementById("app");
 const blueprint = window.PREPLAB_BLUEPRINT;
 const bank = window.PREPLAB_QUESTIONS;
-document.getElementById("versionBadge").textContent = "v0.9.2 DB Expansion";
-document.getElementById("footerVersion").textContent = "v0.9.2 DB Expansion";
+document.getElementById("versionBadge").textContent = "v0.9.3 Public Beta";
+document.getElementById("footerVersion").textContent = "v0.9.3 Public Beta";
 
 const I18N = {
   en: {
@@ -179,7 +179,6 @@ function renderHome() {
         <div class="actions">
           <button onclick="startExam('full')">${t("startFull")}</button>
           <button class="secondary" onclick="startExam('quick')">${t("quick")}</button>
-          <a class="button-link" href="studio.html">Question Studio</a>
         </div>
         <label class="toggle"><input id="untimed" type="checkbox" /> ${t("untimed")}</label>
       </div>
