@@ -1,27 +1,32 @@
-# PrepLab — עדכון v1.0.0 (ספרינט 6: Knowledge Base Foundation)
+# ניקוי + סנכרון גרסה → v1.0.0
 
-## קבצים
+## חלק 1: תיקון גרסה (החלפת קבצים)
 ```
-js/vocabStore.js       ← מחליף (type + forms + מנוע ייבוא CSV/JSON/TXT + מיזוג בטוח)
-knowledge-studio.html  ← חדש — CMS רב-טיפוסי (ניהול/חיפוש/סינון/ייבוא/סטטיסטיקות)
-data/awlImport.js      ← חדש — 570 מילות AWL לייבוא
+index.html   ← v0.9.8 → v1.0.0
+js/app.js    ← "v0.9.8 Vocabulary Engine" → "v1.0.0 Public Beta"
 ```
-ללא שינוי: questionForge.js, vocab-studio.html (נשאר כ-Question Forge), המנוע, הבנק.
+רק 2 שורות בכל קובץ. שום לוגיקה לא נגעה.
 
-## git
+## חלק 2: מחיקת קבצים מתים
+שלושה קבצים ישנים שלא נטענים באף דף (נבדק):
 ```
-git add js/vocabStore.js knowledge-studio.html data/awlImport.js
-git commit -m "feat(kb): knowledge base foundation - multi-type CMS, import engine, AWL seed"
+git rm app.js          # שורש — שריד ספרינט 1 (לא js/app.js!)
+git rm questions.js    # שורש — מאגר ישן
+git rm js/vocabularyEngine.js   # הוחלף ב-questionForge.js בספרינט 5
+```
+
+## אל תמחק
+data/levels.js — פעיל! index.html טוען אותו.
+
+## git — הכל בקומיט אחד
+```
+git add index.html js/app.js
+git rm app.js questions.js js/vocabularyEngine.js
+git commit -m "chore: sync UI to v1.0.0 and remove dead legacy files"
 git push
 ```
 
-## מיזוג ה-AWL עם ה-800 (הבקשה שלך)
-1. פתח knowledge-studio.html → לשונית "ייבוא"
-2. לחץ "טען AWL (570 מילים)" → תצוגה מקדימה תראה: 456 חדשים, 84 להעשרה, 114 דילוגים (כפילות)
-3. לחץ "בצע ייבוא" → סה"כ ~1,256 ערכים, אפס כפילויות
-4. הערכים נשמרים ב-localStorage. לקיבוע בריפו: (עתידי) ייצוא KB → commit
-
-## כללי מיזוג
-- מילה חדשה → נוספת
-- קיימת ולא נערכה → מושלמים רק שדות ריקים
-- קיימת ונערכה ידנית → נשמרת כמו שהיא, לעולם לא נדרסת
+## בדיקה אחרי דחיפה
+- הסימולטור מציג v1.0.0 (תג בפינה + פוטר)
+- vocab-studio.html עדיין עובד (Question Forge)
+- knowledge-studio.html עדיין עובד (KB + ייבוא AWL)
