@@ -1,8 +1,8 @@
 const app = document.getElementById("app");
 const blueprint = window.PREPLAB_BLUEPRINT;
 const bank = window.PREPLAB_QUESTIONS;
-document.getElementById("versionBadge").textContent = "v1.1.0 Production Readiness";
-document.getElementById("footerVersion").textContent = "v1.1.0 Production Readiness";
+document.getElementById("versionBadge").textContent = "v1.1.1 Adaptive Calibration & Time Analytics";
+document.getElementById("footerVersion").textContent = "v1.1.1 Adaptive Calibration & Time Analytics";
 
 const I18N = {
   en: {
@@ -59,7 +59,16 @@ const I18N = {
     en: "English",
     sentenceCompletion: "Sentence Completion",
     restatement: "Restatement",
-    reading: "Reading Comprehension"
+    reading: "Reading Comprehension",
+    timeAnalysis: "Time Management",
+    totalTime: "Total Time",
+    avgTimePerQuestion: "Average Time",
+    avgReadingTime: "Reading",
+    avgSentenceTime: "Sentence Completion",
+    avgRestatementTime: "Restatement",
+    fastestQuestion: "Fastest Question",
+    slowestQuestion: "Slowest Question",
+    untimedTotal: "Untimed"
   },
   he: {
     dir: "rtl",
@@ -115,7 +124,16 @@ const I18N = {
     en: "English",
     sentenceCompletion: "השלמת משפטים",
     restatement: "משפטים נרדפים",
-    reading: "הבנת הנקרא"
+    reading: "הבנת הנקרא",
+    timeAnalysis: "ניהול זמן",
+    totalTime: "זמן כולל",
+    avgTimePerQuestion: "זמן ממוצע לשאלה",
+    avgReadingTime: "הבנת הנקרא",
+    avgSentenceTime: "השלמת משפטים",
+    avgRestatementTime: "משפטים נרדפים",
+    fastestQuestion: "השאלה המהירה ביותר",
+    slowestQuestion: "השאלה האיטית ביותר",
+    untimedTotal: "ללא הגבלת זמן"
   }
 };
 
@@ -133,6 +151,12 @@ let state = {
   secondsLeft: 0,
   timer: null,
   startedAt: null,
+  finishedAt: null,
+  // Time analytics: one timer for the whole exam (never per-question).
+  // Per-question time is derived by diffing timestamps, not by running
+  // a separate countdown per item.
+  times: [],
+  questionStartedAt: null,
   lang: localStorage.getItem("preplabLang") || "he"
 };
 
@@ -230,19 +254,25 @@ function startExam(mode) {
   state.session = PrepLabAdaptiveEngine.createSession(mode, blueprint, bank, getRecentQuestionIds());
   state.items = [];
   state.answers = [];
+  state.times = [];
   state.index = 0;
   state.processedCount = 0;
   state.ability = initialAbility();
   state.abilityHistory = [state.ability];
   state.startedAt = Date.now();
+  state.finishedAt = null;
   const first = state.session.next(state.ability);
   if (!first) { renderHome(); return; }
   state.items.push(first);
   rememberSelectedItem(first);
   state.answers.push(null);
+  state.questionStartedAt = Date.now();
   state.secondsLeft = (mode === "full" ? blueprint.timing.fullMinutes : blueprint.timing.quickMinutes) * 60;
-  if (!state.untimed) {
-    state.timer = setInterval(() => {
+  // One tick for the whole exam — used for the single 50-minute countdown
+  // (real Amirnet exams have no per-question timer) and, when debug mode
+  // is on, to refresh the live "time on current question" readout.
+  state.timer = setInterval(() => {
+    if (!state.untimed) {
       state.secondsLeft--;
       if (state.secondsLeft <= 0) { finishExam(); return; }
       const timerEl = document.getElementById("timerValue");
@@ -250,8 +280,9 @@ function startExam(mode) {
         timerEl.textContent = formatTime(state.secondsLeft);
         timerEl.classList.toggle("time-low", state.secondsLeft <= 300);
       }
-    }, 1000);
-  }
+    }
+    if (state.debugMode) updateDebugTimeReadout();
+  }, 1000);
   renderExam();
 }
 
@@ -263,6 +294,23 @@ function formatTime(seconds) {
 
 function labelType(type) {
   return ({sentenceCompletion:t("sentenceCompletion"), restatement:t("restatement"), reading:t("reading")})[type] || type;
+}
+
+// Live-updating debug readouts (time on question, running average) —
+// refreshed by the single exam tick, not by a timer of their own.
+function averageTimeSoFarMs() {
+  const done = state.times.slice(0, state.processedCount).filter(t => t != null);
+  if (!done.length) return 0;
+  return Math.round(done.reduce((s, t) => s + t, 0) / done.length);
+}
+
+function updateDebugTimeReadout() {
+  const onQuestionEl = document.getElementById("debugTimeOnQuestion");
+  if (onQuestionEl && state.questionStartedAt) {
+    onQuestionEl.textContent = formatTime(Math.floor((Date.now() - state.questionStartedAt) / 1000));
+  }
+  const avgEl = document.getElementById("debugAvgTime");
+  if (avgEl) avgEl.textContent = formatTime(Math.floor(averageTimeSoFarMs() / 1000));
 }
 
 function renderDebugPanel(item) {
@@ -278,7 +326,12 @@ function renderDebugPanel(item) {
       <span>Target Difficulty</span><strong>${d.targetDifficulty ?? "—"}</strong>
       <span>Candidate Pool</span><strong>${d.candidatePoolSize ?? "—"}/${d.totalUnusedPoolSize ?? "—"}</strong>
       <span>Freshness</span><strong>${d.freshnessMode ?? "—"}</strong>
-      <span>Reason</span><strong>${d.selectionReason ?? "—"}</strong>
+      <span>Selection Reason</span><strong>${d.selectionReason ?? "—"}</strong>
+      <span>Ability Before</span><strong>${d.abilityBeforeAnswer ?? d.abilityBeforeSelection ?? "—"}</strong>
+      <span>Ability After</span><strong>${d.abilityAfterAnswer ?? "—"}</strong>
+      <span>Time On Current Question</span><strong id="debugTimeOnQuestion">0:00</strong>
+      <span>Average Time</span><strong id="debugAvgTime">${formatTime(Math.floor(averageTimeSoFarMs() / 1000))}</strong>
+      <span>Decision Log</span><strong>${d.decisionLog ?? "—"}</strong>
     </div>
   </details>`;
 }
@@ -321,6 +374,8 @@ function choose(optionIndex) { state.answers[state.index] = optionIndex; renderE
 function skipQuestion() { state.answers[state.index] = null; nextQuestion(); }
 
 // Locks the current question: ability updates exactly once per question.
+// Time spent is measured once here too, by diffing timestamps —
+// there is still only one exam-level timer, never one per question.
 function lockCurrentQuestion() {
   if (state.processedCount > state.index) return;
   const item = state.items[state.index];
@@ -331,12 +386,15 @@ function lockCurrentQuestion() {
   state.ability = PrepLabAdaptiveEngine.updateAbility(
     state.ability, isCorrect, wasAnswered, item, blueprint, state.processedCount
   );
+  const timeSpentMs = state.questionStartedAt ? Math.max(0, Date.now() - state.questionStartedAt) : 0;
+  state.times[state.index] = timeSpentMs;
   item._debug = {
     ...(item._debug || {}),
     abilityBeforeAnswer: Math.round(before * 100) / 100,
     abilityAfterAnswer: Math.round(state.ability * 100) / 100,
     wasAnswered,
-    isCorrect
+    isCorrect,
+    timeSpentMs
   };
   state.abilityHistory.push(state.ability);
   state.processedCount++;
@@ -349,6 +407,7 @@ function nextQuestion() {
   state.items.push(nextItem);
   rememberSelectedItem(nextItem);
   state.answers.push(null);
+  state.questionStartedAt = Date.now();
   state.index++;
   renderExam();
 }
@@ -356,9 +415,23 @@ function nextQuestion() {
 function finishExam(keepScreen = false) {
   clearInterval(state.timer);
   if (state.items.length && state.processedCount <= state.index) lockCurrentQuestion();
+  state.finishedAt = Date.now();
   const plannedTotal = state.session ? state.session.plannedTotal : state.items.length;
   const result = PrepLabScoring.calculate(state.items, state.answers, state.abilityHistory, blueprint, plannedTotal);
   saveRecentQuestionIds(state.items);
+  try {
+    // Fail-silent: telemetry must never break the exam flow.
+    if (window.PrepLabTelemetry) {
+      PrepLabTelemetry.recordSimulation({
+        items: state.items,
+        answers: state.answers,
+        abilityHistory: state.abilityHistory,
+        result,
+        mode: state.mode,
+        times: state.times
+      });
+    }
+  } catch (e) {}
   renderResults(result);
 }
 
@@ -371,6 +444,73 @@ function abilityPath() {
   const points = state.abilityHistory.filter((_, i) => i % Math.ceil(state.abilityHistory.length / 8) === 0).slice(0, 8);
   if (!points.includes(state.abilityHistory[state.abilityHistory.length - 1])) points.push(state.abilityHistory[state.abilityHistory.length - 1]);
   return points.map(v => `<span>${Math.round(v * 10) / 10}</span>`).join(`<b>→</b>`);
+}
+
+// One exam-level clock (start → finish), diffed against per-question
+// timestamps recorded while answering. No timer is created per question.
+function computeTimeAnalysis() {
+  const times = state.times.filter(t => t != null);
+  if (!times.length) return null;
+
+  const totalMs = state.finishedAt && state.startedAt ? state.finishedAt - state.startedAt : times.reduce((s, t) => s + t, 0);
+  const avgMs = Math.round(times.reduce((s, t) => s + t, 0) / times.length);
+
+  const byType = {};
+  state.items.forEach((item, i) => {
+    const ms = state.times[i];
+    if (ms == null) return;
+    (byType[item.type] ||= []).push(ms);
+  });
+  const avgByType = (type) => {
+    const list = byType[type];
+    if (!list || !list.length) return null;
+    return Math.round(list.reduce((s, t) => s + t, 0) / list.length);
+  };
+
+  let fastestIndex = -1, slowestIndex = -1;
+  state.items.forEach((item, i) => {
+    const ms = state.times[i];
+    if (ms == null) return;
+    if (fastestIndex === -1 || ms < state.times[fastestIndex]) fastestIndex = i;
+    if (slowestIndex === -1 || ms > state.times[slowestIndex]) slowestIndex = i;
+  });
+
+  const allottedSeconds = (state.mode === "full" ? blueprint.timing.fullMinutes : blueprint.timing.quickMinutes) * 60;
+
+  return {
+    totalMs,
+    avgMs,
+    avgReadingMs: avgByType("reading"),
+    avgSentenceMs: avgByType("sentenceCompletion"),
+    avgRestatementMs: avgByType("restatement"),
+    fastestIndex,
+    slowestIndex,
+    allottedSeconds
+  };
+}
+
+function timeAnalysisBlock() {
+  const t1 = computeTimeAnalysis();
+  if (!t1) return "";
+  const secs = (ms) => Math.floor(ms / 1000);
+  const totalLine = state.untimed
+    ? `${formatTime(secs(t1.totalMs))} (${t("untimedTotal")})`
+    : `${formatTime(secs(t1.totalMs))} / ${formatTime(t1.allottedSeconds)}`;
+  const rows = [
+    [t("avgTimePerQuestion"), formatTime(secs(t1.avgMs))],
+    t1.avgReadingMs != null ? [t("avgReadingTime"), formatTime(secs(t1.avgReadingMs))] : null,
+    t1.avgSentenceMs != null ? [t("avgSentenceTime"), formatTime(secs(t1.avgSentenceMs))] : null,
+    t1.avgRestatementMs != null ? [t("avgRestatementTime"), formatTime(secs(t1.avgRestatementMs))] : null,
+    t1.fastestIndex !== -1 ? [t("fastestQuestion"), `Q${t1.fastestIndex + 1} · ${formatTime(secs(state.times[t1.fastestIndex]))}`] : null,
+    t1.slowestIndex !== -1 ? [t("slowestQuestion"), `Q${t1.slowestIndex + 1} · ${formatTime(secs(state.times[t1.slowestIndex]))}`] : null
+  ].filter(Boolean);
+
+  return `
+    <h3>${t("timeAnalysis")}</h3>
+    <div class="review metric-list">
+      <div class="metric-row"><div><strong>${t("totalTime")}</strong><span>${totalLine}</span></div></div>
+      ${rows.map(([label, value]) => `<div class="metric-row"><div><strong>${label}</strong><span>${value}</span></div></div>`).join("")}
+    </div>`;
 }
 
 
@@ -454,6 +594,7 @@ function renderResults(result) {
       </div>
       <h3>${t("abilityPath")}</h3>
       <div class="ability-path">${abilityPath()}</div>
+      ${timeAnalysisBlock()}
       <h3>${t("review")}</h3>
       <div class="review">
         ${state.items.map((item, i) => {

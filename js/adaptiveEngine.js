@@ -1,5 +1,5 @@
 /* ============================================================
-   PrepLab Adaptive Engine · v1.1.0
+   PrepLab Adaptive Engine · v1.1.1
    Live CAT-style selection: every question is chosen AFTER the
    previous answer, based on current ability. Options are
    shuffled per session to remove answer-position bias.
@@ -9,6 +9,10 @@
    - stronger recent-question avoidance
    - weighted pool selection for fresher simulations
    - selection diagnostics for hidden developer mode
+
+   v1.1.1 calibration & time analytics:
+   - decision-log strings for extended developer debug mode
+   (selection/ability logic unchanged from v1.1.0)
    ============================================================ */
 
 window.PrepLabAdaptiveEngine = (() => {
@@ -81,6 +85,7 @@ window.PrepLabAdaptiveEngine = (() => {
     });
 
     if (!picked) return null;
+    const roundedAbility = Math.round(ability * 10) / 10;
     return {
       question: picked,
       debug: {
@@ -90,7 +95,9 @@ window.PrepLabAdaptiveEngine = (() => {
         candidatePoolSize: candidates.length,
         totalUnusedPoolSize: unused.length,
         freshnessMode,
-        selectionReason: `weighted ${freshnessMode} match near ability ${Math.round(ability * 10) / 10}`
+        selectionReason: `weighted ${freshnessMode} match near ability ${roundedAbility}`,
+        decisionLog: `ability ${roundedAbility} → target difficulty ${targetDifficulty} → picked difficulty ${picked.difficulty || 3} ` +
+          `from ${candidates.length}/${unused.length} candidates (${freshnessMode})`
       }
     };
   }
@@ -124,17 +131,22 @@ window.PrepLabAdaptiveEngine = (() => {
       return Math.exp(-dist / (temperature + 0.45)) * (0.85 + Math.random() * 0.3);
     });
 
-    return passage ? {
+    if (!passage) return null;
+    const roundedAbility = Math.round(ability * 10) / 10;
+    const freshnessMode = fresh.length ? "fresh" : "recent-fallback";
+    return {
       passage,
       debug: {
         abilityBeforeSelection: Math.round(ability * 100) / 100,
         selectedDifficulty: Math.round(passageDifficulty(passage) * 10) / 10,
         candidatePoolSize: candidates.length,
         totalUnusedPoolSize: unused.length,
-        freshnessMode: fresh.length ? "fresh" : "recent-fallback",
-        selectionReason: `weighted passage match near ability ${Math.round(ability * 10) / 10}`
+        freshnessMode,
+        selectionReason: `weighted passage match near ability ${roundedAbility}`,
+        decisionLog: `ability ${roundedAbility} → passage difficulty ${Math.round(passageDifficulty(passage) * 10) / 10} ` +
+          `from ${candidates.length}/${unused.length} candidates (${freshnessMode})`
       }
-    } : null;
+    };
   }
 
   /* ---- Logistic (Elo/IRT-style) ability update ---- */

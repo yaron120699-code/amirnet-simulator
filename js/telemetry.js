@@ -1,8 +1,13 @@
 /* ============================================================
-   PrepLab Telemetry & Calibration Layer · v0.9.6
+   PrepLab Telemetry & Calibration Layer · v1.1.1
    Collects anonymous learning statistics locally so question
-   difficulty, scoring and the adaptive engine can be calibrated
-   against real usage.
+   difficulty, scoring, timing and the adaptive engine can be
+   calibrated against real usage.
+
+   v1.1.1: now wired into the live exam (js/app.js calls
+   recordSimulation on every finish). Each per-question record
+   also stores timeSpent (ms), abilityBefore and abilityAfter so
+   future calibration work can look at pacing, not just accuracy.
 
    Design principles:
    - Mergeable aggregates: sums + counts, never averages, so a
@@ -63,7 +68,9 @@ window.PrepLabTelemetry = (() => {
       solverScoreSum: 0,    // final scores of users who answered correctly
       solverCount: 0,
       failScoreSum: 0,      // final scores of users who answered incorrectly
-      failCount: 0
+      failCount: 0,
+      timeSpentSum: 0,      // ms, mergeable sum for avg time = timeSpentSum / timedCount
+      timedCount: 0
     };
   }
 
@@ -77,7 +84,7 @@ window.PrepLabTelemetry = (() => {
   /* ============================================================
      WRITE PATH — called once per completed simulation
      ============================================================ */
-  function recordSimulation({ items, answers, abilityHistory, result, mode }) {
+  function recordSimulation({ items, answers, abilityHistory, result, mode, times }) {
     const state = getState();
     state.totals.simulations++;
 
@@ -89,6 +96,7 @@ window.PrepLabTelemetry = (() => {
       high: result.high,
       confidence: result.confidence,
       abilityPath: abilityHistory.map(a => Math.round(a * 100) / 100),
+      totalTimeMs: Array.isArray(times) ? times.reduce((s, t) => s + (t || 0), 0) : null,
       questions: []
     };
 
@@ -100,15 +108,20 @@ window.PrepLabTelemetry = (() => {
         stats = state.questions[item.id] = emptyQuestionStats(item.version);
       }
 
-      const abilityWhenShown = abilityHistory[i] != null
-        ? abilityHistory[i]
-        : abilityHistory[abilityHistory.length - 1];
+      const abilityBefore = i === 0 ? abilityHistory[0] : abilityHistory[i - 1];
+      const abilityAfter = abilityHistory[i] != null ? abilityHistory[i] : abilityHistory[abilityHistory.length - 1];
+      const abilityWhenShown = abilityBefore != null ? abilityBefore : abilityAfter;
       const answer = answers[i];
       const wasAnswered = answer !== null && answer !== undefined;
       const isCorrect = wasAnswered && answer === item.answer;
+      const timeSpent = Array.isArray(times) && times[i] != null ? times[i] : null;
 
       stats.shown++;
       stats.abilitySum += abilityWhenShown;
+      if (timeSpent != null) {
+        stats.timeSpentSum += timeSpent;
+        stats.timedCount++;
+      }
       if (!wasAnswered) {
         stats.skipped++;
       } else if (isCorrect) {
@@ -121,11 +134,18 @@ window.PrepLabTelemetry = (() => {
         stats.failCount++;
       }
 
+      // Calibration data: questionId, difficulty, correct, timeSpent,
+      // abilityBefore, abilityAfter — kept per-simulation for later
+      // adaptive-engine tuning, alongside the merged aggregate above.
       record.questions.push({
         id: item.id,
         type: item.type,
         difficulty: item.difficulty,
         outcome: !wasAnswered ? "skip" : (isCorrect ? "correct" : "wrong"),
+        correct: isCorrect,
+        timeSpent,
+        abilityBefore: abilityBefore != null ? Math.round(abilityBefore * 100) / 100 : null,
+        abilityAfter: abilityAfter != null ? Math.round(abilityAfter * 100) / 100 : null,
         abilityWhenShown: Math.round(abilityWhenShown * 100) / 100,
         expectedSuccess: Math.round(expectedSuccess(abilityWhenShown, item.difficulty) * 100)
       });
@@ -149,6 +169,7 @@ window.PrepLabTelemetry = (() => {
     const avgAbility = stats.shown ? stats.abilitySum / stats.shown : null;
     const avgSolverScore = stats.solverCount ? stats.solverScoreSum / stats.solverCount : null;
     const avgFailScore = stats.failCount ? stats.failScoreSum / stats.failCount : null;
+    const avgTimeMs = stats.timedCount ? Math.round(stats.timeSpentSum / stats.timedCount) : null;
 
     // Discrimination: approximation of point-biserial via the gap
     // between final scores of solvers vs. failers, normalized by a
@@ -208,6 +229,7 @@ window.PrepLabTelemetry = (() => {
       avgAbility: avgAbility != null ? Math.round(avgAbility * 100) / 100 : null,
       avgSolverScore: avgSolverScore != null ? Math.round(avgSolverScore) : null,
       avgFailScore: avgFailScore != null ? Math.round(avgFailScore) : null,
+      avgTimeMs,
       discrimination: discrimination != null ? Math.round(discrimination * 100) / 100 : null,
       flags,
       recommendation
