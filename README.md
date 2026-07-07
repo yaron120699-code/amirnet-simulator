@@ -1,4 +1,4 @@
-# PrepLab — Adaptive Amirnet Simulator · v1.0.0
+# PrepLab — Adaptive Amirnet Simulator · v1.1.0
 
 סימולטור אמירנט אדפטיבי חינמי, ובסיס לפלטפורמת למידה רחבה יותר (PrepLab).
 בנוי ב-HTML/CSS/JavaScript טהור, ללא frameworks, פרוס על GitHub Pages / Vercel.
@@ -82,3 +82,23 @@ README.md
 רמות הקושי, חלקי הדיבר והנושאים במאגר הם הערכה ראשונית ומתכיילים עם הזמן
 דרך שכבת הטלמטריה. ספי השיבוץ למוסדות דורשים אימות מול הפרסום הרשמי של
 כל מוסד לפני הצגה כמחייבים — הסימולטור מספק הערכה בלבד.
+
+
+## v1.1.0 Production Readiness
+
+Stabilization sprint focused on the adaptive engine and question diversity.
+
+### Added
+- Hidden developer debug mode with `?debug=1`
+- Adaptive selection diagnostics
+
+### Changed
+- Question selection now samples around current ability instead of strict rounding
+- Opening ability includes slight jitter to reduce repeated starts
+- Recent-question history is updated immediately when a question is selected
+
+### Fixed
+- Quick Simulation frequently starting with the same questions
+- Overly narrow opening pool around Difficulty 3
+
+See `AUDIT_REPORT.md` for details.

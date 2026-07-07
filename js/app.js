@@ -1,8 +1,8 @@
 const app = document.getElementById("app");
 const blueprint = window.PREPLAB_BLUEPRINT;
 const bank = window.PREPLAB_QUESTIONS;
-document.getElementById("versionBadge").textContent = "v1.0.0 Public Beta";
-document.getElementById("footerVersion").textContent = "v1.0.0 Public Beta";
+document.getElementById("versionBadge").textContent = "v1.1.0 Production Readiness";
+document.getElementById("footerVersion").textContent = "v1.1.0 Production Readiness";
 
 const I18N = {
   en: {
@@ -128,6 +128,7 @@ let state = {
   answers: [],
   index: 0,
   ability: blueprint.adaptive.startAbility,
+  debugMode: new URLSearchParams(window.location.search).has("debug") || localStorage.getItem("preplabDebug") === "true",
   abilityHistory: [],
   secondsLeft: 0,
   timer: null,
@@ -157,6 +158,21 @@ function saveRecentQuestionIds(items) {
     }
     localStorage.setItem("preplabRecentQuestionIds", JSON.stringify(deduped.slice(-160)));
   } catch (e) {}
+}
+
+function rememberSelectedItem(item) {
+  // Persist each selected question immediately, not only at submit.
+  // This prevents repeated starts from showing the same opening items.
+  if (!item) return;
+  saveRecentQuestionIds([item]);
+}
+
+function initialAbility() {
+  const cfg = blueprint.adaptive || {};
+  const jitter = cfg.startJitter ?? 0;
+  const base = cfg.startAbility ?? 3;
+  const raw = base + (Math.random() * 2 - 1) * jitter;
+  return Math.max(cfg.minAbility ?? 1, Math.min(cfg.maxAbility ?? 5, raw));
 }
 
 function t(key) { return I18N[state.lang][key] || I18N.en[key] || key; }
@@ -216,12 +232,13 @@ function startExam(mode) {
   state.answers = [];
   state.index = 0;
   state.processedCount = 0;
-  state.ability = blueprint.adaptive.startAbility;
+  state.ability = initialAbility();
   state.abilityHistory = [state.ability];
   state.startedAt = Date.now();
   const first = state.session.next(state.ability);
   if (!first) { renderHome(); return; }
   state.items.push(first);
+  rememberSelectedItem(first);
   state.answers.push(null);
   state.secondsLeft = (mode === "full" ? blueprint.timing.fullMinutes : blueprint.timing.quickMinutes) * 60;
   if (!state.untimed) {
@@ -248,6 +265,24 @@ function labelType(type) {
   return ({sentenceCompletion:t("sentenceCompletion"), restatement:t("restatement"), reading:t("reading")})[type] || type;
 }
 
+function renderDebugPanel(item) {
+  if (!state.debugMode || !item?._debug) return "";
+  const d = item._debug;
+  return `<details class="debug-panel english-content" open>
+    <summary>Developer Debug</summary>
+    <div class="debug-grid">
+      <span>Question ID</span><strong>${item.id}</strong>
+      <span>Type</span><strong>${item.type}</strong>
+      <span>Current Ability</span><strong>${Math.round(state.ability * 100) / 100}</strong>
+      <span>Question Difficulty</span><strong>${item.difficulty}</strong>
+      <span>Target Difficulty</span><strong>${d.targetDifficulty ?? "—"}</strong>
+      <span>Candidate Pool</span><strong>${d.candidatePoolSize ?? "—"}/${d.totalUnusedPoolSize ?? "—"}</strong>
+      <span>Freshness</span><strong>${d.freshnessMode ?? "—"}</strong>
+      <span>Reason</span><strong>${d.selectionReason ?? "—"}</strong>
+    </div>
+  </details>`;
+}
+
 function renderExam() {
   const item = state.items[state.index];
   const plannedTotal = state.session ? state.session.plannedTotal : state.items.length;
@@ -271,6 +306,7 @@ function renderExam() {
       <div class="options english-content">
         ${item.options.map((opt, i) => `<button class="option ${selected === i ? "selected" : ""}" onclick="choose(${i})"><span class="option-num">${i + 1}</span><span>${opt}</span></button>`).join("")}
       </div>
+      ${renderDebugPanel(item)}
       <div class="nav">
         <span class="no-back-note">${t("noBack")}</span>
         <div class="actions" style="margin:0">
@@ -291,9 +327,17 @@ function lockCurrentQuestion() {
   const answer = state.answers[state.index];
   const wasAnswered = answer !== null && answer !== undefined;
   const isCorrect = answer === item.answer;
+  const before = state.ability;
   state.ability = PrepLabAdaptiveEngine.updateAbility(
     state.ability, isCorrect, wasAnswered, item, blueprint, state.processedCount
   );
+  item._debug = {
+    ...(item._debug || {}),
+    abilityBeforeAnswer: Math.round(before * 100) / 100,
+    abilityAfterAnswer: Math.round(state.ability * 100) / 100,
+    wasAnswered,
+    isCorrect
+  };
   state.abilityHistory.push(state.ability);
   state.processedCount++;
 }
@@ -303,6 +347,7 @@ function nextQuestion() {
   const nextItem = state.session.next(state.ability);
   if (!nextItem) { finishExam(); return; }
   state.items.push(nextItem);
+  rememberSelectedItem(nextItem);
   state.answers.push(null);
   state.index++;
   renderExam();

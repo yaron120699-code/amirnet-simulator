@@ -1,5 +1,5 @@
 window.PREPLAB_BLUEPRINT = {
-  version: "v0.9.6 Placement Blueprint",
+  version: "v1.1.0 Production Readiness Blueprint",
   examName: "Amirnet Simulation",
   scoreRange: { min: 50, max: 150 },
   timing: {
@@ -14,7 +14,9 @@ window.PREPLAB_BLUEPRINT = {
     // delta = K * (actual - expected), expected = 1/(1+e^(difficulty-ability))
     kStart: 0.55,     // initial step size — how fast the exam "finds" the user
     kHalfLife: 10,    // after this many questions, K is halved (stabilizes)
-    skipFactor: 0.35  // skipped question costs K * skipFactor
+    skipFactor: 0.35, // skipped question costs K * skipFactor
+    startJitter: 0.35, // randomizes the opening ability slightly so fresh simulations do not start identically
+    selectionTemperature: 0.9 // higher = more variation around current ability
   },
   sectionTemplates: {
     full: {
