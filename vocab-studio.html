@@ -9,85 +9,391 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Heebo:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    /* Studio-scoped CMS styles (internal tool only) */
+    .studio-grid { display:grid; grid-template-columns: 340px 1fr; gap:16px; align-items:start; }
+    @media (max-width: 900px) { .studio-grid { grid-template-columns: 1fr; } }
+    .kpis { display:grid; grid-template-columns: repeat(6, 1fr); gap:8px; margin:14px 0 18px; }
+    @media (max-width: 900px) { .kpis { grid-template-columns: repeat(3, 1fr); } }
+    .kpi { background:var(--card-soft); border:1px solid var(--line); border-radius:var(--r-md); padding:10px 12px; font-size:11.5px; color:var(--ink-soft); }
+    .kpi strong { display:block; font-size:19px; color:var(--ink); letter-spacing:-0.02em; }
+    .filters { display:grid; grid-template-columns: 1fr 1fr; gap:6px; margin-bottom:10px; }
+    .filters input, .filters select, .field input, .field select, .field textarea {
+      width:100%; padding:8px 10px; border:1px solid var(--line-strong); border-radius:var(--r-sm);
+      font-family:inherit; font-size:13px; background:var(--card); color:var(--ink); box-sizing:border-box;
+    }
+    .filters input:focus, .field input:focus, .field textarea:focus, .filters select:focus { outline:2px solid var(--accent); outline-offset:1px; }
+    .filters .full { grid-column: 1 / -1; }
+    .word-list { max-height: 560px; overflow:auto; display:grid; gap:6px; }
+    .word-item { text-align:start; width:100%; background:var(--card); color:var(--ink); border:1px solid var(--line);
+      font-size:13.5px; padding:9px 11px; border-radius:var(--r-sm); display:flex; gap:10px; align-items:center;
+      cursor:pointer; min-height:0; font-weight:450; justify-content:flex-start; transition: border-color .12s ease; }
+    .word-item:hover { border-color: var(--ink-faint); background:var(--card-soft); transform:none; box-shadow:none; }
+    .word-item.active { border-color: var(--accent); background: var(--accent-soft); box-shadow: inset 0 0 0 1px var(--accent); }
+    .word-item .diff { flex:0 0 auto; width:22px; height:22px; display:grid; place-items:center; border-radius:6px;
+      background:var(--card-soft); border:1px solid var(--line-strong); font-size:11.5px; font-weight:650; color:var(--ink-soft); }
+    .word-item small { color:var(--ink-faint); }
+    .badge { display:inline-block; padding:1px 7px; border-radius:999px; font-size:10.5px; font-weight:600; }
+    .badge.ok { background:var(--good-soft); color:var(--good); }
+    .badge.todo { background:#FBF3E5; color:var(--warn); }
+    .field { margin-bottom:10px; }
+    .field label { display:block; font-size:12px; font-weight:600; color:var(--ink-soft); margin-bottom:4px; }
+    .field-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+    @media (max-width:700px){ .field-grid { grid-template-columns:1fr; } }
+    .gen-result { border:1px solid var(--line); border-radius:var(--r-md); padding:10px 12px; margin:6px 0; font-size:13px; background:var(--card-soft); }
+    .gen-result.blocked { border-color:#EAD9BD; background:#FBF3E5; }
+    .gen-result strong { font-size:12.5px; }
+    .draft-card { border:1px solid var(--line); border-radius:var(--r-lg); padding:16px; margin-top:12px; background:var(--card); }
+    .draft-card.approved { border-color: var(--accent-line); background: #FBFDFC; }
+    .draft-head { display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:10px; }
+    .draft-options .opt-row { display:flex; gap:6px; align-items:center; margin-bottom:6px; }
+    .draft-options input[type=text] { flex:1; }
+    .preview-box { border:1px dashed var(--line-strong); border-radius:var(--r-md); padding:16px; margin-top:10px; background:var(--paper); }
+    .preview-label { font-size:10.5px; text-transform:uppercase; letter-spacing:.1em; color:var(--ink-faint); margin-bottom:8px; }
+    .export-pre { white-space:pre; direction:ltr; text-align:left; background:var(--card-soft); border:1px solid var(--line);
+      border-radius:var(--r-md); padding:14px; overflow:auto; max-height:340px; font-size:12px; font-family:ui-monospace,monospace; }
+    .tabs { display:flex; gap:4px; margin-bottom:12px; border-bottom:1px solid var(--line); }
+    .tab { border:0; background:none; color:var(--ink-soft); padding:8px 12px; font-size:13.5px; font-weight:550; cursor:pointer; border-bottom:2px solid transparent; border-radius:0; min-height:0; }
+    .tab:hover { color:var(--ink); background:none; transform:none; box-shadow:none; }
+    .tab.active { color:var(--accent-ink); border-bottom-color:var(--accent); }
+    .btn-sm { padding:7px 12px; font-size:12.5px; min-height:0; }
+    .empty-note { color:var(--ink-faint); font-size:13px; padding:14px; text-align:center; }
+  </style>
 </head>
 <body class="rtl">
   <div class="app-shell">
     <header class="topbar">
       <a class="brand" href="index.html" aria-label="PrepLab home">
         <span class="brand-mark">P</span>
-        <span><span class="eyebrow">Internal</span><strong>Vocabulary Studio</strong></span>
+        <span><span class="eyebrow">PrepLab · Internal CMS</span><strong>Vocabulary Studio</strong></span>
       </a>
-      <div class="top-actions"><div class="version">v0.9.8</div></div>
+      <div class="top-actions">
+        <a class="ghost-link" href="calibration.html">Calibration</a>
+        <a class="ghost-link" href="index.html">← Simulator</a>
+        <div class="version">v0.9.9</div>
+      </div>
     </header>
 
     <main>
-      <section class="hero">
-        <div class="card">
-          <div class="eyebrow">Vocabulary Engine</div>
-          <h2>מאגר שפה פנימי</h2>
-          <p>בחר מילה מתוך המאגר, צור טיוטות שאלות, העתק JSON, ועבור עליהן לפני שהן נכנסות לבנק השאלות.</p>
-          <label class="toggle" style="width:100%">חיפוש מילה / תרגום / נושא
-            <input id="searchInput" type="text" placeholder="abolish / לבטל / Science" style="width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;font-family:inherit;margin-inline-start:10px" />
-          </label>
-          <div class="actions">
-            <button onclick="renderWords()">חפש</button>
-            <button class="secondary" onclick="copySelectedBundle()">העתק טיוטות JSON</button>
+      <div class="kpis" id="kpis"></div>
+
+      <div class="tabs">
+        <button class="tab active" data-tab="words" onclick="setTab('words')">מילים וטיוטות</button>
+        <button class="tab" data-tab="review" onclick="setTab('review')">תור אישורים</button>
+        <button class="tab" data-tab="export" onclick="setTab('export')">ייצוא</button>
+      </div>
+
+      <!-- ============ TAB: WORDS ============ -->
+      <section id="tab-words" class="studio-grid">
+        <div class="card" style="padding:18px">
+          <div class="filters">
+            <input class="full" id="fText" placeholder="חיפוש מילה / תרגום / נושא" oninput="renderList()" />
+            <select id="fDifficulty" onchange="renderList()"><option value="">קושי: הכל</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select>
+            <select id="fPos" onchange="renderList()"></select>
+            <select id="fTopic" onchange="renderList()"></select>
+            <select id="fSource" onchange="renderList()"></select>
+            <select class="full" id="fMissing" onchange="renderList()">
+              <option value="">תור עבודה: הכל</option>
+              <option value="example">חסר משפט דוגמה</option>
+              <option value="synonyms">חסרות מילים נרדפות</option>
+              <option value="pos">חסר חלק דיבר</option>
+              <option value="enriched">מועשרות במלואן</option>
+            </select>
           </div>
+          <div class="actions" style="margin:0 0 10px">
+            <button class="btn-sm" onclick="newEntry()">+ מילה חדשה</button>
+            <span id="listCount" style="font-size:12px;color:var(--ink-faint)"></span>
+          </div>
+          <div class="word-list" id="wordList"></div>
         </div>
-        <div class="card">
-          <div class="eyebrow">Stats</div>
-          <div id="stats" class="stats-grid mini-grid"></div>
+
+        <div>
+          <div class="card" id="editorCard"><div class="empty-note">בחר מילה מהרשימה או צור חדשה</div></div>
+          <div id="genResults"></div>
+          <div id="wordDrafts"></div>
         </div>
       </section>
 
-      <section class="card" style="margin-top:20px">
-        <h3>מילים</h3>
-        <div id="wordList" class="review metric-list"></div>
+      <!-- ============ TAB: REVIEW ============ -->
+      <section id="tab-review" class="card" style="display:none">
+        <h3 style="margin-top:0">טיוטות ממתינות לאישור</h3>
+        <div id="reviewList"></div>
       </section>
 
-      <section class="card" style="margin-top:20px">
-        <h3>טיוטות</h3>
-        <pre id="draftOutput" style="white-space:pre-wrap;direction:ltr;text-align:left;background:var(--card-soft);border:1px solid var(--line);border-radius:12px;padding:16px;overflow:auto;max-height:460px"></pre>
+      <!-- ============ TAB: EXPORT ============ -->
+      <section id="tab-export" class="card" style="display:none">
+        <h3 style="margin-top:0">ייצוא שאלות מאושרות</h3>
+        <p class="muted-note">רק שאלות שאושרו ידנית מיוצאות. הפורמט תואם questionBank.js — אפס עיצוב ידני.</p>
+        <div class="actions" style="margin-top:10px">
+          <button class="btn-sm" onclick="copySnippet()">העתק Snippet ל-questionBank.js</button>
+          <button class="btn-sm secondary" onclick="downloadJSON()">הורד JSON</button>
+          <button class="btn-sm secondary" onclick="copyJSON()">העתק JSON</button>
+          <button class="btn-sm secondary" onclick="downloadVocabBank()">הורד vocabularyBank.js מעודכן</button>
+        </div>
+        <p class="muted-note" style="margin-top:14px">
+          שאלות sentenceCompletion / restatement מודבקות למערכים הקיימים.
+          שאלות vocabularyMeaning / readingSentence נכנסות למקטע "vocabulary" —
+          נשמרות כבר עכשיו, יוגשו כשהמנוע יתמוך בסוג.
+        </p>
+        <pre class="export-pre" id="exportPreview"></pre>
       </section>
     </main>
 
-    <footer><span>Hidden internal tool · Human review required</span><span>v0.9.8</span></footer>
+    <footer><span>Internal CMS · nothing publishes without human approval</span><span>v0.9.9</span></footer>
   </div>
 
   <script src="data/vocabularyBank.js"></script>
-  <script src="js/vocabularyEngine.js"></script>
+  <script src="js/vocabStore.js"></script>
+  <script src="js/questionForge.js"></script>
   <script>
-    let selectedWord = null;
-    function renderStats() {
-      const s = PrepLabVocabularyEngine.stats();
-      document.getElementById('stats').innerHTML = `
-        <div class="stat">מילים<strong>${s.total}</strong><span>במאגר</span></div>
-        <div class="stat">רמה 3–5<strong>${(s.byDifficulty[3]||0)+(s.byDifficulty[4]||0)+(s.byDifficulty[5]||0)}</strong><span>רלוונטיות למבחן</span></div>
-        <div class="stat">רמה 4<strong>${s.byDifficulty[4]||0}</strong><span>מתקדמות</span></div>
-        <div class="stat">רמה 5<strong>${s.byDifficulty[5]||0}</strong><span>קשות</span></div>`;
+    const Store = window.PrepLabVocabStore, Forge = window.PrepLabQuestionForge;
+    let selectedId = null;
+
+    const TYPE_LABELS = {
+      vocabularyMeaning: "Vocabulary Meaning",
+      readingSentence: "Reading Sentence",
+      sentenceCompletion: "Sentence Completion",
+      restatement: "Restatement"
+    };
+
+    function setTab(name) {
+      document.querySelectorAll(".tab").forEach(b => b.classList.toggle("active", b.dataset.tab === name));
+      document.getElementById("tab-words").style.display = name === "words" ? "" : "none";
+      document.getElementById("tab-review").style.display = name === "review" ? "" : "none";
+      document.getElementById("tab-export").style.display = name === "export" ? "" : "none";
+      if (name === "review") renderReview();
+      if (name === "export") renderExport();
     }
-    function renderWords() {
-      const q = document.getElementById('searchInput').value || '';
-      const words = PrepLabVocabularyEngine.search(q).slice(0, 80);
-      document.getElementById('wordList').innerHTML = words.map(w => `
-        <button class="option" onclick="selectWord('${w.id}')">
-          <span class="option-num">${w.difficulty}</span>
-          <span><strong>${w.word}</strong> · ${w.translation}<br><small>${w.topic} · ${w.partOfSpeech} · ${w.status}</small></span>
-        </button>`).join('');
+
+    /* ---------- KPIs ---------- */
+    function renderKpis() {
+      const s = Store.stats(), f = Forge.stats();
+      const topTopic = Object.entries(s.byTopic).sort((a,b)=>b[1]-a[1])[0];
+      document.getElementById("kpis").innerHTML = `
+        <div class="kpi">סה"כ מילים<strong>${s.total}</strong></div>
+        <div class="kpi">מועשרות (מוכנות לייצור)<strong>${s.enriched}</strong></div>
+        <div class="kpi">קושי 4–5<strong>${(s.byDifficulty[4]||0)+(s.byDifficulty[5]||0)}</strong></div>
+        <div class="kpi">שאלות שנוצרו<strong>${f.generated}</strong></div>
+        <div class="kpi">ממתינות לאישור<strong>${f.pending}</strong></div>
+        <div class="kpi">מאושרות<strong>${f.approved}</strong></div>`;
     }
-    function selectWord(id) {
-      selectedWord = (window.PREPLAB_VOCABULARY || []).find(w => w.id === id);
-      const bundle = PrepLabVocabularyEngine.generateBundle(selectedWord);
-      document.getElementById('draftOutput').textContent = JSON.stringify(bundle, null, 2);
+
+    /* ---------- Word list ---------- */
+    function fillFacets() {
+      const { topics, sources, pos } = Store.facets();
+      const opt = (arr, label) => `<option value="">${label}: הכל</option>` + arr.map(v => `<option>${v}</option>`).join("");
+      document.getElementById("fTopic").innerHTML = opt(topics, "נושא");
+      document.getElementById("fSource").innerHTML = opt(sources, "מקור");
+      document.getElementById("fPos").innerHTML = opt(pos, "חלק דיבר");
     }
-    async function copySelectedBundle() {
-      const txt = document.getElementById('draftOutput').textContent;
-      if (!txt.trim()) return alert('בחר מילה קודם');
-      await navigator.clipboard.writeText(txt);
-      alert('הועתק');
+
+    function currentFilter() {
+      return {
+        text: document.getElementById("fText").value,
+        difficulty: document.getElementById("fDifficulty").value,
+        topic: document.getElementById("fTopic").value,
+        partOfSpeech: document.getElementById("fPos").value,
+        source: document.getElementById("fSource").value,
+        missing: document.getElementById("fMissing").value
+      };
     }
-    renderStats();
-    renderWords();
+
+    function renderList() {
+      const results = Store.search(currentFilter());
+      document.getElementById("listCount").textContent = results.length + " תוצאות";
+      document.getElementById("wordList").innerHTML = results.slice(0, 200).map(w => {
+        const ready = w.example && w.synonyms.length && w.partOfSpeech !== "unknown";
+        return `<button class="word-item ${w.id === selectedId ? "active" : ""}" onclick="selectEntry('${w.id}')">
+          <span class="diff">${w.difficulty}</span>
+          <span style="flex:1"><strong dir="ltr">${w.word}</strong> · ${w.translation}<br>
+            <small>${w.topic} · ${w.partOfSpeech}</small></span>
+          <span class="badge ${ready ? "ok" : "todo"}">${ready ? "מוכנה" : "חסר מידע"}</span>
+        </button>`;
+      }).join("") || `<div class="empty-note">אין תוצאות</div>`;
+    }
+
+    /* ---------- Entry editor ---------- */
+    function selectEntry(id) {
+      selectedId = id;
+      renderList();
+      renderEditor();
+      document.getElementById("genResults").innerHTML = "";
+      renderWordDrafts();
+    }
+
+    function newEntry() {
+      const e = Store.save({ id: Store.nextId(), word: "", translation: "", difficulty: 3, source: "manual", status: "draft" });
+      selectEntry(e.id);
+    }
+
+    function fieldVal(id) { return document.getElementById(id)?.value ?? ""; }
+    function listVal(id) { return fieldVal(id).split(",").map(s => s.trim()).filter(Boolean); }
+
+    function renderEditor() {
+      const e = Store.get(selectedId);
+      if (!e) { document.getElementById("editorCard").innerHTML = `<div class="empty-note">בחר מילה</div>`; return; }
+      document.getElementById("editorCard").innerHTML = `
+        <div class="draft-head">
+          <h3 style="margin:0" dir="ltr">${e.word || "מילה חדשה"}</h3>
+          <span style="font-size:11.5px;color:var(--ink-faint)">${e.id} · עודכן: ${e.updatedAt ? new Date(e.updatedAt).toLocaleDateString() : "—"}</span>
+        </div>
+        <div class="field-grid">
+          <div class="field"><label>Word</label><input id="eWord" dir="ltr" value="${esc(e.word)}"></div>
+          <div class="field"><label>תרגום</label><input id="eTranslation" value="${esc(e.translation)}"></div>
+          <div class="field"><label>קושי (1–5)</label><input id="eDifficulty" type="number" min="1" max="5" value="${e.difficulty}"></div>
+          <div class="field"><label>Part of Speech</label>
+            <select id="ePos">${["unknown","noun","verb","adjective","adverb"].map(p=>`<option ${e.partOfSpeech===p?"selected":""}>${p}</option>`).join("")}</select></div>
+          <div class="field"><label>נושא</label><input id="eTopic" value="${esc(e.topic)}"></div>
+          <div class="field"><label>תדירות</label>
+            <select id="eFreq">${["high","medium","low"].map(f=>`<option ${e.frequency===f?"selected":""}>${f}</option>`).join("")}</select></div>
+        </div>
+        <div class="field"><label>Definition (English)</label><input id="eDefinition" dir="ltr" value="${esc(e.definition)}"></div>
+        <div class="field"><label>Synonyms (מופרדות בפסיק)</label><input id="eSynonyms" dir="ltr" value="${esc(e.synonyms.join(", "))}"></div>
+        <div class="field"><label>Antonyms (מופרדות בפסיק)</label><input id="eAntonyms" dir="ltr" value="${esc(e.antonyms.join(", "))}"></div>
+        <div class="field"><label>Example sentence (חייב להכיל את המילה בצורתה המדויקת)</label>
+          <textarea id="eExample" dir="ltr" rows="2">${esc(e.example)}</textarea></div>
+        <div class="field"><label>Source</label><input id="eSource" value="${esc(e.source)}"></div>
+        <div class="actions" style="margin-top:8px">
+          <button class="btn-sm" onclick="saveEntry()">שמור</button>
+          <button class="btn-sm" onclick="saveEntry(); generateDrafts()">⚡ Generate Draft Questions</button>
+          <button class="btn-sm secondary" onclick="deleteEntry()">מחק מילה</button>
+        </div>`;
+    }
+
+    function saveEntry() {
+      Store.save({
+        id: selectedId,
+        word: fieldVal("eWord").trim(),
+        translation: fieldVal("eTranslation").trim(),
+        difficulty: Number(fieldVal("eDifficulty")) || 3,
+        partOfSpeech: fieldVal("ePos"),
+        topic: fieldVal("eTopic").trim() || "General Academic",
+        frequency: fieldVal("eFreq"),
+        definition: fieldVal("eDefinition").trim(),
+        synonyms: listVal("eSynonyms"),
+        antonyms: listVal("eAntonyms"),
+        example: fieldVal("eExample").trim(),
+        source: fieldVal("eSource").trim() || "manual"
+      });
+      renderKpis(); renderList(); renderEditor();
+    }
+
+    function deleteEntry() {
+      if (!confirm("למחוק את המילה מה-KB?")) return;
+      Store.remove(selectedId); selectedId = null;
+      renderKpis(); fillFacets(); renderList();
+      document.getElementById("editorCard").innerHTML = `<div class="empty-note">בחר מילה</div>`;
+      document.getElementById("genResults").innerHTML = ""; document.getElementById("wordDrafts").innerHTML = "";
+    }
+
+    /* ---------- Generation ---------- */
+    function generateDrafts() {
+      const { results } = Forge.generateForEntry(selectedId);
+      document.getElementById("genResults").innerHTML = `<div class="card" style="margin-top:14px;padding:16px">
+        <div class="eyebrow">תוצאות ייצור</div>` +
+        Object.entries(results).map(([type, r]) => r.blocked
+          ? `<div class="gen-result blocked"><strong>${TYPE_LABELS[type]}</strong> — חסום. חסר: ${r.missing.join(" · ")}</div>`
+          : `<div class="gen-result"><strong>${TYPE_LABELS[type]}</strong> — ${r.skipped ? "כבר קיימת טיוטה ממתינה מסוג זה" : "טיוטה נוצרה ✓"}</div>`
+        ).join("") + `</div>`;
+      renderKpis(); renderWordDrafts();
+    }
+
+    /* ---------- Draft cards (shared by word view & review queue) ---------- */
+    function draftCard(d, { showWord = false } = {}) {
+      const isPending = d.status === "draft";
+      return `<div class="draft-card ${d.status === "approved" ? "approved" : ""}" id="card-${d.id}">
+        <div class="draft-head">
+          <span><strong>${TYPE_LABELS[d.type] || d.type}</strong>
+            ${showWord ? ` · <span dir="ltr">${esc(d.sourceWord)}</span>` : ""}
+            <span class="badge ${d.status === "approved" ? "ok" : "todo"}">${d.status}${d.bankId ? " · " + d.bankId : ""}</span></span>
+          <span style="font-size:11px;color:var(--ink-faint)">${d.generator}</span>
+        </div>
+        ${isPending ? `
+        <div class="field"><label>שאלה</label><textarea dir="ltr" rows="2" id="q-${d.id}">${esc(d.question)}</textarea></div>
+        <div class="draft-options" dir="ltr">
+          ${d.options.map((o, i) => `
+            <div class="opt-row">
+              <input type="radio" name="ans-${d.id}" ${d.answer === i ? "checked" : ""} onchange="patchDraft('${d.id}',{answer:${i}})" title="תשובה נכונה">
+              <input type="text" id="opt-${d.id}-${i}" value="${esc(o)}">
+            </div>`).join("")}
+        </div>
+        <div class="field-grid" style="margin-top:8px">
+          <div class="field"><label>קושי</label><input type="number" min="1" max="5" id="diff-${d.id}" value="${d.difficulty}"></div>
+          <div class="field" style="grid-column:span 2"><label>תגיות (פסיקים)</label><input dir="ltr" id="tags-${d.id}" value="${esc(d.tags.join(", "))}"></div>
+        </div>
+        <div class="field"><label>הסבר</label><textarea dir="ltr" rows="2" id="exp-${d.id}">${esc(d.explanation)}</textarea></div>
+        <div class="actions" style="margin:4px 0 0">
+          <button class="btn-sm secondary" onclick="saveDraftEdits('${d.id}')">שמור עריכה</button>
+          <button class="btn-sm" onclick="approve('${d.id}')">✓ אשר</button>
+          <button class="btn-sm secondary" onclick="Forge.rejectDraft('${d.id}'); refreshDrafts()">דחה</button>
+        </div>` : `
+        <div class="actions" style="margin:0">
+          <button class="btn-sm secondary" onclick="Forge.deleteDraft('${d.id}'); refreshDrafts()">הסר</button>
+        </div>`}
+        <div class="preview-box">
+          <div class="preview-label">Preview — בדיוק כפי שיוצג בסימולטור</div>
+          <div class="english-content">
+            <div class="question-meta"><span class="pill">${TYPE_LABELS[d.type] || d.type}</span><span class="pill">Difficulty ${d.difficulty}/5</span></div>
+            <div class="question-text" style="font-size:17px">${esc(d.question)}</div>
+            <div class="options">${d.options.map((o, i) =>
+              `<div class="option ${i === d.answer ? "selected" : ""}" style="cursor:default"><span class="option-num">${i + 1}</span><span>${esc(o)}</span></div>`).join("")}</div>
+          </div>
+        </div>
+      </div>`;
+    }
+
+    function renderWordDrafts() {
+      const list = Forge.drafts({ sourceWordId: selectedId });
+      document.getElementById("wordDrafts").innerHTML = list.length
+        ? `<div class="card" style="margin-top:14px;padding:16px"><div class="eyebrow">טיוטות למילה זו</div>` +
+          list.map(d => draftCard(d)).join("") + `</div>` : "";
+    }
+
+    function renderReview() {
+      const pending = Forge.drafts({ status: "draft" });
+      document.getElementById("reviewList").innerHTML = pending.length
+        ? pending.map(d => draftCard(d, { showWord: true })).join("")
+        : `<div class="empty-note">אין טיוטות ממתינות. בחר מילה בלשונית "מילים" ולחץ Generate.</div>`;
+    }
+
+    function refreshDrafts() { renderKpis(); renderWordDrafts(); renderReview(); }
+
+    function saveDraftEdits(id) {
+      const options = [0,1,2,3].map(i => document.getElementById(`opt-${id}-${i}`).value);
+      Forge.updateDraft(id, {
+        question: document.getElementById(`q-${id}`).value,
+        options,
+        explanation: document.getElementById(`exp-${id}`).value,
+        difficulty: Number(document.getElementById(`diff-${id}`).value) || 3,
+        tags: document.getElementById(`tags-${id}`).value.split(",").map(s => s.trim()).filter(Boolean)
+      });
+      refreshDrafts();
+    }
+
+    function approve(id) {
+      saveDraftEdits(id);
+      const res = Forge.approveDraft(id);
+      if (res && res.error) { alert(res.error); return; }
+      refreshDrafts();
+    }
+
+    /* ---------- Export ---------- */
+    function renderExport() {
+      document.getElementById("exportPreview").textContent = Forge.exportAppendSnippet();
+    }
+    async function copySnippet() { await navigator.clipboard.writeText(Forge.exportAppendSnippet()); alert("הועתק"); }
+    async function copyJSON() { await navigator.clipboard.writeText(JSON.stringify(Forge.exportApproved(), null, 2)); alert("הועתק"); }
+    function download(name, content) {
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(new Blob([content], { type: "text/plain" }));
+      a.download = name; a.click(); URL.revokeObjectURL(a.href);
+    }
+    function downloadJSON() { download("preplab-approved-questions.json", JSON.stringify(Forge.exportApproved(), null, 2)); }
+    function downloadVocabBank() { download("vocabularyBank.js", Store.exportBankFile()); }
+
+    function esc(s) { return String(s ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+
+    fillFacets(); renderKpis(); renderList();
   </script>
 </body>
 </html>

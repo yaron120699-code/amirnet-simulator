@@ -1,35 +1,40 @@
-# PrepLab — עדכון v0.9.6 (ספרינט 3: שכבת כיול)
+# PrepLab — עדכון v0.9.9 (ספרינט 5: Vocabulary Content Factory)
 
 ## קבצים
 
 ```
-index.html            ← מחליף (טוען את telemetry.js, גרסה 0.9.6)
-calibration.html      ← חדש — דשבורד מפתחים, לא מקושר משום מקום
-js/app.js             ← מחליף (+שורות רישום טלמטריה)
-js/adaptiveEngine.js  ← מחליף (+ברירות מחדל למטא-דאטה)
-js/telemetry.js       ← חדש — מודול האיסוף והכיול
+vocab-studio.html     ← מחליף (שכתוב מלא — CMS)
+js/vocabStore.js      ← חדש — שכבת Knowledge Base
+js/questionForge.js   ← חדש — גנרטורים + pipeline אישורים
 ```
 
-ללא שינוי: css/styles.css, js/scoring.js, data/blueprint.js, questions/questionBank.js
+## למחוק באותו קומיט
+
+```
+git rm js/vocabularyEngine.js
+```
+
+(vocab-studio.html החדש לא טוען אותו; התבניות הגנריות שיצרו שאלות שבורות נמחקו בכוונה.)
+
+## ללא שינוי
+data/vocabularyBank.js (ה-seed של 800 המילים), index.html, המנוע, הבנק.
 
 ## git
-
 ```
 git add .
-git commit -m "feat(calibration): telemetry layer + developer calibration dashboard"
+git rm js/vocabularyEngine.js
+git commit -m "feat(studio): vocabulary content factory - CMS, honest generators, approval pipeline"
 git push
 ```
 
-## גישה לדשבורד
+## זרימת עבודה חדשה
+1. פתח vocab-studio.html → סנן "חסר משפט דוגמה" (תור העבודה)
+2. העשר מילה: POS, משפט דוגמה (חייב להכיל את המילה במדויק), נרדפות, הפכים
+3. Generate Draft Questions → עד 4 סוגי טיוטות
+4. ערוך כל טיוטה (עם preview חי זהה לסימולטור) → אשר
+5. לשונית ייצוא → העתק Snippet → הדבק ב-questionBank.js → קומיט
+6. הורד vocabularyBank.js מעודכן וקמט גם אותו (העריכות שלך ב-KB)
 
-https://<your-domain>/calibration.html
-לא מקושר מהאתר, מסומן noindex. הנתונים מקומיים לדפדפן —
-השתמש ב-Export JSON לאיסוף ידני עד שיהיה backend.
-
-## בדיקות אחרי דיפלוי
-
-- [ ] סימולציה רגילה עובדת בדיוק כמו קודם (אפס שינוי בחוויה)
-- [ ] אחרי סימולציה: calibration.html מציג אותה ב-Recent simulations
-- [ ] טבלת השאלות מתמלאת אחרי כמה סימולציות
-- [ ] Export JSON מוריד קובץ
-- [ ] החלפת שפה במסך תוצאות לא יוצרת רישום כפול (Simulations לא קופץ ב-2)
+## חשוב
+העריכות נשמרות ב-localStorage של הדפדפן. הייצוא הוא מסלול הקומיט —
+ייצא ושמור בריפו בסוף כל סשן עבודה.
