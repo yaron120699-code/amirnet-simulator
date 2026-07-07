@@ -1,40 +1,27 @@
-# PrepLab — עדכון v0.9.9 (ספרינט 5: Vocabulary Content Factory)
+# PrepLab — עדכון v1.0.0 (ספרינט 6: Knowledge Base Foundation)
 
 ## קבצים
-
 ```
-vocab-studio.html     ← מחליף (שכתוב מלא — CMS)
-js/vocabStore.js      ← חדש — שכבת Knowledge Base
-js/questionForge.js   ← חדש — גנרטורים + pipeline אישורים
+js/vocabStore.js       ← מחליף (type + forms + מנוע ייבוא CSV/JSON/TXT + מיזוג בטוח)
+knowledge-studio.html  ← חדש — CMS רב-טיפוסי (ניהול/חיפוש/סינון/ייבוא/סטטיסטיקות)
+data/awlImport.js      ← חדש — 570 מילות AWL לייבוא
 ```
-
-## למחוק באותו קומיט
-
-```
-git rm js/vocabularyEngine.js
-```
-
-(vocab-studio.html החדש לא טוען אותו; התבניות הגנריות שיצרו שאלות שבורות נמחקו בכוונה.)
-
-## ללא שינוי
-data/vocabularyBank.js (ה-seed של 800 המילים), index.html, המנוע, הבנק.
+ללא שינוי: questionForge.js, vocab-studio.html (נשאר כ-Question Forge), המנוע, הבנק.
 
 ## git
 ```
-git add .
-git rm js/vocabularyEngine.js
-git commit -m "feat(studio): vocabulary content factory - CMS, honest generators, approval pipeline"
+git add js/vocabStore.js knowledge-studio.html data/awlImport.js
+git commit -m "feat(kb): knowledge base foundation - multi-type CMS, import engine, AWL seed"
 git push
 ```
 
-## זרימת עבודה חדשה
-1. פתח vocab-studio.html → סנן "חסר משפט דוגמה" (תור העבודה)
-2. העשר מילה: POS, משפט דוגמה (חייב להכיל את המילה במדויק), נרדפות, הפכים
-3. Generate Draft Questions → עד 4 סוגי טיוטות
-4. ערוך כל טיוטה (עם preview חי זהה לסימולטור) → אשר
-5. לשונית ייצוא → העתק Snippet → הדבק ב-questionBank.js → קומיט
-6. הורד vocabularyBank.js מעודכן וקמט גם אותו (העריכות שלך ב-KB)
+## מיזוג ה-AWL עם ה-800 (הבקשה שלך)
+1. פתח knowledge-studio.html → לשונית "ייבוא"
+2. לחץ "טען AWL (570 מילים)" → תצוגה מקדימה תראה: 456 חדשים, 84 להעשרה, 114 דילוגים (כפילות)
+3. לחץ "בצע ייבוא" → סה"כ ~1,256 ערכים, אפס כפילויות
+4. הערכים נשמרים ב-localStorage. לקיבוע בריפו: (עתידי) ייצוא KB → commit
 
-## חשוב
-העריכות נשמרות ב-localStorage של הדפדפן. הייצוא הוא מסלול הקומיט —
-ייצא ושמור בריפו בסוף כל סשן עבודה.
+## כללי מיזוג
+- מילה חדשה → נוספת
+- קיימת ולא נערכה → מושלמים רק שדות ריקים
+- קיימת ונערכה ידנית → נשמרת כמו שהיא, לעולם לא נדרסת

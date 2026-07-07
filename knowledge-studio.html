@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>PrepLab · Knowledge Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Heebo:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    .studio-grid { display:grid; grid-template-columns: 360px 1fr; gap:16px; align-items:start; }
+    @media (max-width: 900px) { .studio-grid { grid-template-columns: 1fr; } }
+    .kpis { display:grid; grid-template-columns: repeat(5, 1fr); gap:8px; margin:14px 0 8px; }
+    @media (max-width: 900px) { .kpis { grid-template-columns: repeat(3, 1fr); } }
+    .kpi { background:var(--card-soft); border:1px solid var(--line); border-radius:var(--r-md); padding:10px 12px; font-size:11.5px; color:var(--ink-soft); }
+    .kpi strong { display:block; font-size:19px; color:var(--ink); letter-spacing:-0.02em; }
+    .type-bar { display:flex; flex-wrap:wrap; gap:6px; margin:6px 0 16px; font-size:12px; color:var(--ink-soft); }
+    .type-bar span { background:var(--card-soft); border:1px solid var(--line); border-radius:999px; padding:3px 10px; }
+    .filters { display:grid; grid-template-columns: 1fr 1fr; gap:6px; margin-bottom:10px; }
+    .filters input, .filters select, .field input, .field select, .field textarea {
+      width:100%; padding:8px 10px; border:1px solid var(--line-strong); border-radius:var(--r-sm);
+      font-family:inherit; font-size:13px; background:var(--card); color:var(--ink); box-sizing:border-box; }
+    .filters input:focus, .field input:focus, .field textarea:focus, .filters select:focus { outline:2px solid var(--accent); outline-offset:1px; }
+    .filters .full { grid-column: 1 / -1; }
+    .word-list { max-height: 560px; overflow:auto; display:grid; gap:6px; }
+    .word-item { text-align:start; width:100%; background:var(--card); color:var(--ink); border:1px solid var(--line);
+      font-size:13.5px; padding:9px 11px; border-radius:var(--r-sm); display:flex; gap:10px; align-items:center;
+      cursor:pointer; min-height:0; font-weight:450; justify-content:flex-start; transition: border-color .12s ease; }
+    .word-item:hover { border-color: var(--ink-faint); background:var(--card-soft); transform:none; box-shadow:none; }
+    .word-item.active { border-color: var(--accent); background: var(--accent-soft); box-shadow: inset 0 0 0 1px var(--accent); }
+    .word-item .diff { flex:0 0 auto; width:22px; height:22px; display:grid; place-items:center; border-radius:6px;
+      background:var(--card-soft); border:1px solid var(--line-strong); font-size:11.5px; font-weight:650; color:var(--ink-soft); }
+    .word-item small { color:var(--ink-faint); }
+    .badge { display:inline-block; padding:1px 7px; border-radius:999px; font-size:10px; font-weight:600; }
+    .badge.type { background:var(--accent-soft); color:var(--accent-ink); }
+    .badge.manual { background:#EFEAF7; color:#6B4FA3; }
+    .field { margin-bottom:10px; }
+    .field label { display:block; font-size:12px; font-weight:600; color:var(--ink-soft); margin-bottom:4px; }
+    .field-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+    @media (max-width:700px){ .field-grid { grid-template-columns:1fr; } }
+    .tabs { display:flex; gap:4px; margin-bottom:12px; border-bottom:1px solid var(--line); }
+    .tab { border:0; background:none; color:var(--ink-soft); padding:8px 12px; font-size:13.5px; font-weight:550; cursor:pointer; border-bottom:2px solid transparent; border-radius:0; min-height:0; }
+    .tab:hover { color:var(--ink); background:none; transform:none; box-shadow:none; }
+    .tab.active { color:var(--accent-ink); border-bottom-color:var(--accent); }
+    .btn-sm { padding:7px 12px; font-size:12.5px; min-height:0; }
+    .empty-note { color:var(--ink-faint); font-size:13px; padding:14px; text-align:center; }
+    .preview-box { border:1px dashed var(--line-strong); border-radius:var(--r-md); padding:16px; margin-top:12px; background:var(--paper); }
+    .preview-label { font-size:10.5px; text-transform:uppercase; letter-spacing:.1em; color:var(--ink-faint); margin-bottom:8px; }
+    .kv { display:flex; gap:8px; font-size:14px; margin:4px 0; }
+    .kv b { color:var(--ink-soft); font-weight:600; min-width:110px; }
+    .plan-row { display:flex; justify-content:space-between; padding:8px 12px; border:1px solid var(--line); border-radius:var(--r-sm); margin-bottom:6px; font-size:13px; }
+    .plan-row.add { border-color:var(--accent-line); }
+    .plan-row.skip { color:var(--ink-faint); }
+    textarea.import-area { width:100%; min-height:160px; font-family:ui-monospace,monospace; font-size:12px; direction:ltr; text-align:left; padding:12px; border:1px solid var(--line-strong); border-radius:var(--r-sm); box-sizing:border-box; }
+  </style>
+</head>
+<body class="rtl">
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="index.html" aria-label="PrepLab home">
+        <span class="brand-mark">P</span>
+        <span><span class="eyebrow">PrepLab · Internal CMS</span><strong>Knowledge Studio</strong></span>
+      </a>
+      <div class="top-actions">
+        <a class="ghost-link" href="vocab-studio.html">Question Forge</a>
+        <a class="ghost-link" href="index.html">&larr; Simulator</a>
+        <div class="version">v1.0.0</div>
+      </div>
+    </header>
+
+    <main>
+      <div class="kpis" id="kpis"></div>
+      <div class="type-bar" id="typeBar"></div>
+
+      <div class="tabs">
+        <button class="tab active" data-tab="manage" onclick="setTab('manage')">ניהול ידע</button>
+        <button class="tab" data-tab="import" onclick="setTab('import')">ייבוא</button>
+      </div>
+
+      <section id="tab-manage" class="studio-grid">
+        <div class="card" style="padding:18px">
+          <div class="filters">
+            <input class="full" id="fText" placeholder="חיפוש מילה / תרגום / נושא" oninput="renderList()" />
+            <select id="fType" onchange="renderList()"></select>
+            <select id="fDifficulty" onchange="renderList()"><option value="">קושי: הכל</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select>
+            <select id="fPos" onchange="renderList()"></select>
+            <select id="fTopic" onchange="renderList()"></select>
+            <select id="fSource" onchange="renderList()"></select>
+            <select id="fMissing" onchange="renderList()">
+              <option value="">מצב: הכל</option>
+              <option value="example">חסר משפט דוגמה</option>
+              <option value="synonyms">חסרות נרדפות</option>
+              <option value="pos">חסר חלק דיבר</option>
+              <option value="enriched">מועשרות</option>
+            </select>
+          </div>
+          <div class="actions" style="margin:0 0 10px">
+            <button class="btn-sm" onclick="newEntry()">+ ערך חדש</button>
+            <span id="listCount" style="font-size:12px;color:var(--ink-faint)"></span>
+          </div>
+          <div class="word-list" id="wordList"></div>
+        </div>
+        <div class="card" id="editorCard"><div class="empty-note">בחר ערך מהרשימה או צור חדש</div></div>
+      </section>
+
+      <section id="tab-import" class="card" style="display:none">
+        <h3 style="margin-top:0">ייבוא ידע</h3>
+        <p class="muted-note">CSV, JSON או TXT. מיזוג בטוח: ערכים חדשים מתווספים, קיימים מועשרים בשדות ריקים בלבד, וערכים שנערכו ידנית לעולם לא נדרסים.</p>
+        <div class="field-grid" style="margin:14px 0">
+          <div class="field"><label>פורמט</label>
+            <select id="impFormat"><option value="csv">CSV</option><option value="json">JSON</option><option value="txt">TXT</option></select></div>
+          <div class="field"><label>סוג ברירת מחדל</label><select id="impType"></select></div>
+          <div class="field"><label>קובץ</label><input type="file" id="impFile" accept=".csv,.json,.txt" onchange="loadFile()"></div>
+        </div>
+        <textarea class="import-area" id="impText" placeholder="הדבק כאן CSV / JSON / TXT, או טען קובץ למעלה"></textarea>
+        <div class="actions" style="margin-top:10px">
+          <button class="btn-sm" onclick="previewImport()">תצוגה מקדימה</button>
+          <button class="btn-sm secondary" onclick="loadAWL()">טען AWL (570 מילים)</button>
+        </div>
+        <div id="importPlan" style="margin-top:16px"></div>
+      </section>
+    </main>
+
+    <footer><span>Internal CMS · Knowledge Base foundation · no AI, no question generation</span><span>v1.0.0</span></footer>
+  </div>
+
+  <script src="data/vocabularyBank.js"></script>
+  <script src="data/awlImport.js"></script>
+  <script src="js/vocabStore.js"></script>
+  <script>
+    const Store = window.PrepLabVocabStore;
+    let selectedId = null, lastRaw = null;
+    const TYPE_LABELS = { vocabulary:"אוצר מילים", phrasalVerb:"פועל מורכב", idiom:"ניב", academicExpression:"ביטוי אקדמי", grammarPattern:"תבנית דקדוק" };
+    const TYPES = Store.KNOWLEDGE_TYPES;
+
+    function setTab(name) {
+      document.querySelectorAll(".tab").forEach(b => b.classList.toggle("active", b.dataset.tab === name));
+      document.getElementById("tab-manage").style.display = name === "manage" ? "" : "none";
+      document.getElementById("tab-import").style.display = name === "import" ? "" : "none";
+    }
+    function renderKpis() {
+      const s = Store.stats();
+      document.getElementById("kpis").innerHTML = `
+        <div class="kpi">סה"כ ערכים<strong>${s.total}</strong></div>
+        <div class="kpi">מועשרים<strong>${s.enriched}</strong></div>
+        <div class="kpi">סוגים<strong>${Object.keys(s.byType).length}</strong></div>
+        <div class="kpi">קושי 4–5<strong>${(s.byDifficulty[4]||0)+(s.byDifficulty[5]||0)}</strong></div>
+        <div class="kpi">עריכות מקומיות<strong>${Store.pendingOverlayCount()}</strong></div>`;
+      document.getElementById("typeBar").innerHTML =
+        TYPES.map(t => `<span>${TYPE_LABELS[t]}: <strong>${s.byType[t]||0}</strong></span>`).join("") +
+        Object.entries(s.byDifficulty).map(([d,n]) => `<span>קושי ${d}: ${n}</span>`).join("");
+    }
+    function fillFacets() {
+      const { topics, sources, pos } = Store.facets();
+      const opt = (arr, label) => `<option value="">${label}: הכל</option>` + arr.map(v => `<option>${v}</option>`).join("");
+      document.getElementById("fTopic").innerHTML = opt(topics, "נושא");
+      document.getElementById("fSource").innerHTML = opt(sources, "מקור");
+      document.getElementById("fPos").innerHTML = opt(pos, "חלק דיבר");
+      document.getElementById("fType").innerHTML = `<option value="">סוג: הכל</option>` + TYPES.map(t => `<option value="${t}">${TYPE_LABELS[t]}</option>`).join("");
+      document.getElementById("impType").innerHTML = TYPES.map(t => `<option value="${t}">${TYPE_LABELS[t]}</option>`).join("");
+    }
+    function currentFilter() {
+      return { text:document.getElementById("fText").value, type:document.getElementById("fType").value,
+        difficulty:document.getElementById("fDifficulty").value, topic:document.getElementById("fTopic").value,
+        partOfSpeech:document.getElementById("fPos").value, source:document.getElementById("fSource").value,
+        missing:document.getElementById("fMissing").value };
+    }
+    function renderList() {
+      const results = Store.search(currentFilter());
+      document.getElementById("listCount").textContent = results.length + " תוצאות";
+      document.getElementById("wordList").innerHTML = results.slice(0, 300).map(w => `
+        <button class="word-item ${w.id === selectedId ? "active" : ""}" onclick="selectEntry('${w.id}')">
+          <span class="diff">${w.difficulty}</span>
+          <span style="flex:1"><strong dir="ltr">${esc(w.word)}</strong>${w.translation ? " · " + esc(w.translation) : ""}<br>
+            <small>${TYPE_LABELS[w.type] || w.type} · ${w.partOfSpeech}</small></span>
+          ${w.manualEdit ? `<span class="badge manual">נערך</span>` : ""}
+        </button>`).join("") || `<div class="empty-note">אין תוצאות</div>`;
+    }
+    function selectEntry(id) { selectedId = id; renderList(); renderEditor(); }
+    function newEntry() {
+      const e = Store.save({ id: Store.nextId(), type: document.getElementById("fType").value || "vocabulary", word: "", difficulty: 3, source: "manual", status: "draft" });
+      selectEntry(e.id);
+    }
+    function fieldVal(id) { return document.getElementById(id)?.value ?? ""; }
+    function listVal(id) { return fieldVal(id).split(",").map(s => s.trim()).filter(Boolean); }
+    function renderEditor() {
+      const e = Store.get(selectedId);
+      if (!e) { document.getElementById("editorCard").innerHTML = `<div class="empty-note">בחר ערך</div>`; return; }
+      document.getElementById("editorCard").innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px">
+          <h3 style="margin:0" dir="ltr">${esc(e.word) || "ערך חדש"} <span class="badge type">${TYPE_LABELS[e.type]}</span> ${e.manualEdit ? '<span class="badge manual">נערך ידנית</span>' : ''}</h3>
+          <span style="font-size:11.5px;color:var(--ink-faint)">${e.id} · ${esc(e.source)}</span>
+        </div>
+        <div class="field-grid">
+          <div class="field"><label>סוג</label><select id="eType">${TYPES.map(t=>`<option value="${t}" ${e.type===t?"selected":""}>${TYPE_LABELS[t]}</option>`).join("")}</select></div>
+          <div class="field"><label>Word / Expression</label><input id="eWord" dir="ltr" value="${esc(e.word)}"></div>
+          <div class="field"><label>תרגום (אופציונלי)</label><input id="eTranslation" value="${esc(e.translation)}"></div>
+          <div class="field"><label>קושי (1–5)</label><input id="eDifficulty" type="number" min="1" max="5" value="${e.difficulty}"></div>
+          <div class="field"><label>Part of Speech</label>
+            <select id="ePos">${["unknown","noun","verb","adjective","adverb","preposition","conjunction","phrase"].map(p=>`<option ${e.partOfSpeech===p?"selected":""}>${p}</option>`).join("")}</select></div>
+          <div class="field"><label>נושא</label><input id="eTopic" value="${esc(e.topic)}"></div>
+        </div>
+        <div class="field"><label>Definition</label><input id="eDefinition" dir="ltr" value="${esc(e.definition)}"></div>
+        <div class="field-grid">
+          <div class="field"><label>Synonyms (פסיקים)</label><input id="eSynonyms" dir="ltr" value="${esc(e.synonyms.join(", "))}"></div>
+          <div class="field"><label>Antonyms (פסיקים)</label><input id="eAntonyms" dir="ltr" value="${esc(e.antonyms.join(", "))}"></div>
+          <div class="field"><label>Forms (פסיקים)</label><input id="eForms" dir="ltr" value="${esc(e.forms.join(", "))}"></div>
+        </div>
+        <div class="field"><label>Example</label><textarea id="eExample" dir="ltr" rows="2">${esc(e.example)}</textarea></div>
+        <div class="field-grid">
+          <div class="field"><label>Source</label><input id="eSource" value="${esc(e.source)}"></div>
+          <div class="field"><label>Tags (פסיקים)</label><input id="eTags" dir="ltr" value="${esc(e.tags.join(", "))}"></div>
+          <div class="field"><label>תדירות</label><select id="eFreq">${["high","medium","low"].map(f=>`<option ${e.frequency===f?"selected":""}>${f}</option>`).join("")}</select></div>
+        </div>
+        <div class="actions" style="margin-top:6px">
+          <button class="btn-sm" onclick="saveEntry()">שמור</button>
+          <button class="btn-sm secondary" onclick="deleteEntry()">מחק</button>
+        </div>
+        <div class="preview-box">
+          <div class="preview-label">Preview</div>
+          <div class="kv"><b>${TYPE_LABELS[e.type]}</b><span dir="ltr">${esc(e.word)}</span></div>
+          ${e.translation ? `<div class="kv"><b>תרגום</b><span>${esc(e.translation)}</span></div>` : ""}
+          ${e.definition ? `<div class="kv"><b>Definition</b><span dir="ltr">${esc(e.definition)}</span></div>` : ""}
+          ${e.example ? `<div class="kv"><b>Example</b><span dir="ltr">${esc(e.example)}</span></div>` : ""}
+          ${e.synonyms.length ? `<div class="kv"><b>Synonyms</b><span dir="ltr">${esc(e.synonyms.join(", "))}</span></div>` : ""}
+          <div class="kv"><b>קושי / POS</b><span>${e.difficulty}/5 · ${e.partOfSpeech}</span></div>
+        </div>`;
+    }
+    function saveEntry() {
+      Store.save({ id: selectedId, type: fieldVal("eType"),
+        word: fieldVal("eWord").trim(), translation: fieldVal("eTranslation").trim(),
+        difficulty: Number(fieldVal("eDifficulty")) || 3, partOfSpeech: fieldVal("ePos"),
+        topic: fieldVal("eTopic").trim() || "General Academic", frequency: fieldVal("eFreq"),
+        definition: fieldVal("eDefinition").trim(), synonyms: listVal("eSynonyms"),
+        antonyms: listVal("eAntonyms"), forms: listVal("eForms"),
+        example: fieldVal("eExample").trim(), source: fieldVal("eSource").trim() || "manual", tags: listVal("eTags") });
+      renderKpis(); fillFacets(); renderList(); renderEditor();
+    }
+    function deleteEntry() {
+      if (!confirm("למחוק את הערך?")) return;
+      Store.remove(selectedId); selectedId = null;
+      renderKpis(); fillFacets(); renderList();
+      document.getElementById("editorCard").innerHTML = `<div class="empty-note">בחר ערך</div>`;
+    }
+    function loadFile() {
+      const file = document.getElementById("impFile").files[0]; if (!file) return;
+      const ext = file.name.split(".").pop().toLowerCase();
+      if (["csv","json","txt"].includes(ext)) document.getElementById("impFormat").value = ext;
+      const reader = new FileReader();
+      reader.onload = () => document.getElementById("impText").value = reader.result;
+      reader.readAsText(file);
+    }
+    function loadAWL() {
+      if (!window.PREPLAB_AWL_IMPORT) return alert("קובץ ה-AWL לא נטען");
+      document.getElementById("impFormat").value = "json";
+      document.getElementById("impText").value = JSON.stringify(window.PREPLAB_AWL_IMPORT, null, 2);
+      previewImport();
+    }
+    function previewImport() {
+      const text = document.getElementById("impText").value.trim();
+      if (!text) return alert("אין תוכן לייבוא");
+      let result;
+      try { result = Store.importText(text, document.getElementById("impFormat").value, { type: document.getElementById("impType").value }); }
+      catch (err) { return alert("שגיאת פירוק: " + err.message); }
+      lastRaw = result.raw;
+      const p = result.plan;
+      document.getElementById("importPlan").innerHTML = `
+        <div class="kpis" style="grid-template-columns:repeat(4,1fr)">
+          <div class="kpi">חדשים<strong>${p.added.length}</strong></div>
+          <div class="kpi">להעשרה<strong>${p.enriched.length}</strong></div>
+          <div class="kpi">דילוג (נערכו ידנית)<strong>${p.skippedManual.length}</strong></div>
+          <div class="kpi">ללא מילה<strong>${p.skippedNoWord.length}</strong></div>
+        </div>
+        <div class="actions" style="margin:12px 0">
+          <button class="btn-sm" onclick="commitImport()">בצע ייבוא (${p.added.length + p.enriched.length} שינויים)</button>
+        </div>
+        ${p.added.slice(0,8).map(e => `<div class="plan-row add"><span dir="ltr">${esc(e.word)}</span><span>חדש · ${TYPE_LABELS[e.type]}</span></div>`).join("")}
+        ${p.enriched.slice(0,5).map(e => `<div class="plan-row"><span dir="ltr">${esc(e.word)}</span><span>העשרה: ${Object.keys(e.fills).join(", ")}</span></div>`).join("")}
+        ${p.skippedManual.slice(0,3).map(e => `<div class="plan-row skip"><span dir="ltr">${esc(e.word)}</span><span>דילוג — נערך ידנית</span></div>`).join("")}
+        ${(p.added.length > 8 || p.enriched.length > 5) ? `<div class="empty-note">...ועוד</div>` : ""}`;
+    }
+    function commitImport() {
+      if (!lastRaw) return;
+      const res = Store.applyImport(lastRaw, { type: document.getElementById("impType").value });
+      alert(`ייבוא הושלם:\n${res.added} נוספו · ${res.enriched} הועשרו · ${res.skippedManual} דולגו (נערכו ידנית)`);
+      lastRaw = null; document.getElementById("importPlan").innerHTML = ""; document.getElementById("impText").value = "";
+      renderKpis(); fillFacets(); renderList(); setTab("manage");
+    }
+    function esc(s) { return String(s ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+    fillFacets(); renderKpis(); renderList();
+  </script>
+</body>
+</html>
