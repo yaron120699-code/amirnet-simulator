@@ -1,3 +1,82 @@
+diff --git a/README.md b/README.md
+index 4cba446..03ee39d 100644
+--- a/README.md
++++ b/README.md
+@@ -1,4 +1,4 @@
+-# PrepLab — Adaptive Amirnet Simulator · v1.1.1
++# PrepLab — Adaptive Amirnet Simulator · v2.0
+ 
+ סימולטור אמירנט אדפטיבי חינמי, ובסיס לפלטפורמת למידה רחבה יותר (PrepLab).
+ בנוי ב-HTML/CSS/JavaScript טהור, ללא frameworks, פרוס על GitHub Pages / Vercel.
+@@ -19,7 +19,7 @@
+ | `data/blueprint.js` | פרמטרי הסימולציה והמנוע |
+ | `data/levels.js` | מיפוי רמות אנגלית |
+ | `questions/questionBank.js` | בנק השאלות |
+-| `css/styles.css` | מערכת העיצוב |
++| `css/styles.css` | מערכת העיצוב (PrepLab Design Language v2.0) — טוקנים, רכיבים, משותף לכל הדפים |
+ 
+ ### כלי אדמין (נסתרים, לא מקושרים מהאתר)
+ | קובץ | תפקיד |
+@@ -148,3 +148,59 @@ no new features beyond what's listed below.
+ - Exam timer remains a single 50-minute (or 20-minute quick) countdown; no per-question timer exists anywhere in the code.
+ - Debug mode verified to show the new fields and remains hidden without `?debug=1`.
+ - README and `docs/roadmap.md` updated.
++
++---
++
++## v2.0 PrepLab Design Language
++
++UI-only design system pass, laying the visual foundation for future
++modules (Mathematics / Physics / Statistics). No changes to the
++adaptive engine, scoring, blueprint, placement logic, or question bank.
++
++### Added
++- **PrepLab Design Language**: `css/styles.css` rebuilt as a documented,
++  tokenized design system — spacing scale, type scale, radius scale,
++  elevation scale, and named motion durations (150ms/200ms), organized
++  into 9 labeled sections instead of ad hoc rules. Shared by every page
++  (`index.html` and all four admin studio pages).
++- **Modules section on the home page**: Amirnet as the live module, plus
++  Mathematics / Physics / Statistics shown as disabled "Coming soon"
++  cards, establishing the multi-subject shell described in the product
++  vision.
++- **Continue-learning card** on the home page: surfaces the most recent
++  completed simulation (score, estimated level, relative time) by
++  reading the existing telemetry log (`PrepLabTelemetry.lastSimulations`)
++  — no new storage or scoring logic.
++- **Recommendations block** on the results page: identifies the
++  weakest/strongest question type from the already-computed `byType`
++  accuracy breakdown and a pacing note from the already-computed time
++  analysis.
++- **Next step** CTA row at the end of the results page (Back home /
++  Practice again).
++
++### Changed
++- App shell widened from a fixed `1040px` to `clamp(1100px, 92vw, 1280px)`
++  so large monitors no longer feel empty; the exam and results screens
++  intentionally keep a narrower ~860px reading column, per the product
++  vision's instruction not to overdesign the exam screen.
++- Results page reordered: Score → Estimated Level & Progress to
++  Exemption → Time Analysis → Accuracy & Question Breakdown → Ability
++  Path → Recommendations → Full Review → Next Step.
++- Answer options: numeric square badges (`1`–`4`) replaced with circular
++  `A`–`D` letter badges, with a subtle hover state and a "locked in"
++  selection animation.
++
++### Fixed
++- Two review-item inline styles referenced an undefined `--muted` CSS
++  variable; now use `--ink-soft`.
++
++### Not in this pass
++- `studio.html`, `vocab-studio.html`, `knowledge-studio.html`,
++  `calibration.html` inherit the new shared tokens (buttons, cards,
++  badges, inputs) automatically but were not restructured — a
++  candidate for a follow-up pass.
++- Root-level duplicate `app.js` (unused, superseded by `js/app.js` — see
++  v1.1.1) — still present in this checkout and should be deleted.
++
++See `CHANGELOG_DESIGN_LANGUAGE.md` for the full design rationale and a
++manual testing checklist.
 diff --git a/css/styles.css b/css/styles.css
 index e1ab896..d8a7e8d 100644
 --- a/css/styles.css
