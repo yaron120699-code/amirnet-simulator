@@ -70,27 +70,21 @@ const I18N = {
     slowestQuestion: "Slowest Question",
     untimedTotal: "Untimed",
     continueLearning: "Continue learning",
-    lastSimulation: "Your last simulation",
-    resume: "Practice again",
-    modules: "Modules",
-    modulesNote: "One design system, every subject.",
-    modAmirnetDesc: "Adaptive sentence completion, restatement, and reading comprehension.",
-    modMathDesc: "Adaptive algebra, geometry, and word-problem practice.",
-    modPhysicsDesc: "Mechanics, energy, and waves with worked solutions.",
-    modStatsDesc: "Probability, distributions, and data interpretation.",
-    comingSoon: "Coming soon",
-    recentActivity: "Recent activity",
-    recommendations: "Recommendations",
-    nextStep: "Next step",
-    nextStepNote: "Keep your ability estimate fresh — most students improve fastest with short, frequent sessions.",
+    lastScore: "Last score",
+    lastLevel: "Estimated level",
     practiceAgain: "Practice again",
-    recWeak: "Your accuracy was lowest in",
-    recWeakTail: "— a short focused session there should move the needle fastest.",
-    recStrong: "Strongest area:",
-    recStrongTail: "keep it sharp with occasional review.",
-    recPace: "You averaged",
-    recPaceTail: "per question — pacing looks steady for the full exam.",
-    ago: "ago"
+    modules: "Modules",
+    amirnetModule: "Amirnet",
+    amirnetModuleDesc: "Adaptive practice for the Amirnet English exam.",
+    comingSoon: "Coming soon",
+    mathModule: "Mathematics",
+    physicsModule: "Physics",
+    statisticsModule: "Statistics",
+    futureModuleDesc: "Not yet available.",
+    tabOverview: "Overview",
+    tabBreakdown: "Breakdown",
+    tabReview: "Full review",
+    practiceAgainNote: "Practice again to update this score."
   },
   he: {
     dir: "rtl",
@@ -156,28 +150,22 @@ const I18N = {
     fastestQuestion: "השאלה המהירה ביותר",
     slowestQuestion: "השאלה האיטית ביותר",
     untimedTotal: "ללא הגבלת זמן",
-    continueLearning: "המשך למידה",
-    lastSimulation: "הסימולציה האחרונה שלך",
-    resume: "תרגול נוסף",
-    modules: "מודולים",
-    modulesNote: "שפת עיצוב אחת, לכל מקצוע.",
-    modAmirnetDesc: "השלמת משפטים, ניסוח מחדש והבנת הנקרא — אדפטיבי.",
-    modMathDesc: "אלגברה, גאומטריה ותרגול בעיות מילוליות אדפטיבי.",
-    modPhysicsDesc: "מכניקה, אנרגיה וגלים עם פתרונות מלאים.",
-    modStatsDesc: "הסתברות, התפלגויות וניתוח נתונים.",
-    comingSoon: "בקרוב",
-    recentActivity: "פעילות אחרונה",
-    recommendations: "המלצות",
-    nextStep: "הצעד הבא",
-    nextStepNote: "שמור על הערכת היכולת שלך רעננה — רוב הסטודנטים משתפרים הכי מהר עם תרגול קצר ותכוף.",
+    continueLearning: "המשך מהנקודה שבה עצרת",
+    lastScore: "ציון אחרון",
+    lastLevel: "רמה משוערת",
     practiceAgain: "תרגול נוסף",
-    recWeak: "הדיוק שלך היה הנמוך ביותר ב",
-    recWeakTail: "— תרגול ממוקד וקצר שם צפוי לשפר הכי מהר.",
-    recStrong: "התחום החזק ביותר:",
-    recStrongTail: "שמור על החדות עם חזרה מדי פעם.",
-    recPace: "משך הזמן הממוצע שלך היה",
-    recPaceTail: "לשאלה — הקצב נראה יציב לקראת המבחן המלא.",
-    ago: "לפני"
+    modules: "מודולים",
+    amirnetModule: "אמירנט",
+    amirnetModuleDesc: "תרגול אדפטיבי למבחן האמירנט באנגלית.",
+    comingSoon: "בקרוב",
+    mathModule: "מתמטיקה",
+    physicsModule: "פיזיקה",
+    statisticsModule: "סטטיסטיקה",
+    futureModuleDesc: "עדיין לא זמין.",
+    tabOverview: "סקירה כללית",
+    tabBreakdown: "פירוט",
+    tabReview: "סקירת שאלות",
+    practiceAgainNote: "תרגלו שוב כדי לעדכן את הציון."
   }
 };
 
@@ -266,100 +254,88 @@ function applyLanguageChrome() {
   }
 }
 
-// Relative "X ago" string for the continue-learning card. UI-only —
-// reads timestamps already recorded by the telemetry read path.
 function timeAgo(iso) {
-  const diffMs = Date.now() - new Date(iso).getTime();
-  const mins = Math.round(diffMs / 60000);
-  if (mins < 1) return state.lang === "he" ? "כרגע" : "just now";
-  if (mins < 60) return `${mins}${state.lang === "he" ? " דק׳ " : "m "}${t("ago")}`;
+  const ms = Date.now() - new Date(iso).getTime();
+  const mins = Math.round(ms / 60000);
+  if (mins < 60) return state.lang === "he" ? `לפני ${mins} דקות` : `${mins}m ago`;
   const hours = Math.round(mins / 60);
-  if (hours < 24) return `${hours}${state.lang === "he" ? " שע׳ " : "h "}${t("ago")}`;
+  if (hours < 24) return state.lang === "he" ? `לפני ${hours} שעות` : `${hours}h ago`;
   const days = Math.round(hours / 24);
-  return `${days}${state.lang === "he" ? " ימים " : "d "}${t("ago")}`;
+  return state.lang === "he" ? `לפני ${days} ימים` : `${days}d ago`;
 }
 
-// Reads the most recent completed simulation from the existing
-// telemetry log (js/telemetry.js) — no new scoring/adaptive logic,
-// purely surfacing data that is already recorded on finishExam().
-function continueLearningCard() {
+function continueLearningBlock() {
   if (!window.PrepLabTelemetry) return "";
-  let last;
-  try { last = PrepLabTelemetry.lastSimulations(1)[0]; } catch (e) { last = null; }
+  const last = PrepLabTelemetry.lastSimulations(1)[0];
   if (!last) return "";
   const placement = window.PrepLabPlacement ? PrepLabPlacement.classify(last.score, state.lang, last.confidence) : null;
   return `
     <div class="continue-card">
-      <div class="continue-info">
-        <div class="continue-score">${last.score}</div>
-        <div class="continue-meta">
-          <strong>${placement ? placement.levelLabel : t("lastSimulation")}</strong>
-          <span>${t("lastSimulation")} · ${timeAgo(last.at)}</span>
+      <div>
+        <div class="eyebrow">${t("continueLearning")}</div>
+        <div class="stat-line">
+          <span>${t("lastScore")}: <strong>${last.score}</strong></span>
+          ${placement ? `<span>${t("lastLevel")}: <strong>${placement.levelLabel}</strong></span>` : ""}
+          <span>${timeAgo(last.at)}</span>
         </div>
       </div>
-      <button class="secondary" onclick="startExam('quick')">${t("resume")}</button>
+      <button class="secondary" onclick="startExam('quick')">${t("practiceAgain")}</button>
     </div>`;
 }
 
 function moduleGrid() {
-  const soon = [
-    ["math", "\u03A3", t("modMathDesc")],
-    ["physics", "\u0192", t("modPhysicsDesc")],
-    ["stats", "\u0025", t("modStatsDesc")]
-  ];
   return `
-    <div class="section-head">
-      <h3>${t("modules")}</h3>
-      <p class="muted-note">${t("modulesNote")}</p>
-    </div>
     <div class="module-grid">
-      <div class="module-card is-active" onclick="startExam('quick')" role="button" tabindex="0">
-        <div class="module-icon">A</div>
-        <h4>Amirnet</h4>
-        <p>${t("modAmirnetDesc")}</p>
+      <div class="module-card live" onclick="startExam('full')">
+        <span class="badge badge-new">${t("amirnetModule")}</span>
+        <div class="module-desc">${t("amirnetModuleDesc")}</div>
       </div>
-      ${soon.map(([key, icon, desc]) => `
-        <div class="module-card is-soon" aria-disabled="true">
-          <div class="module-icon">${icon}</div>
-          <h4>${labelModule(key)} <span class="badge badge-soon">${t("comingSoon")}</span></h4>
-          <p>${desc}</p>
-        </div>`).join("")}
+      <div class="module-card disabled">
+        <span class="badge badge-soon">${t("comingSoon")}</span>
+        <div class="module-title">${t("mathModule")}</div>
+        <div class="module-desc">${t("futureModuleDesc")}</div>
+      </div>
+      <div class="module-card disabled">
+        <span class="badge badge-soon">${t("comingSoon")}</span>
+        <div class="module-title">${t("physicsModule")}</div>
+        <div class="module-desc">${t("futureModuleDesc")}</div>
+      </div>
+      <div class="module-card disabled">
+        <span class="badge badge-soon">${t("comingSoon")}</span>
+        <div class="module-title">${t("statisticsModule")}</div>
+        <div class="module-desc">${t("futureModuleDesc")}</div>
+      </div>
     </div>`;
-}
-
-function labelModule(key) {
-  const en = { math: "Mathematics", physics: "Physics", stats: "Statistics" };
-  const he = { math: "מתמטיקה", physics: "פיזיקה", stats: "סטטיסטיקה" };
-  return (state.lang === "he" ? he : en)[key] || key;
 }
 
 function renderHome() {
   clearInterval(state.timer);
   app.innerHTML = `
-    <section>
-      ${continueLearningCard()}
-      <div class="hero" style="margin-top: var(--sp-5)">
-        <div class="card">
-          <div class="eyebrow">${t("publicBeta")}</div>
-          <h2>${t("headline")}</h2>
-          <p>${t("intro")}</p>
-          <div class="actions">
-            <button onclick="startExam('full')">${t("startFull")}</button>
-            <button class="secondary" onclick="startExam('quick')">${t("quick")}</button>
-          </div>
-          <label class="toggle"><input id="untimed" type="checkbox" /> ${t("untimed")}</label>
+    <section class="hero">
+      <div class="card">
+        <div class="eyebrow">${t("publicBeta")}</div>
+        <h2>${t("headline")}</h2>
+        <p>${t("intro")}</p>
+        <div class="actions">
+          <button onclick="startExam('full')">${t("startFull")}</button>
+          <button class="secondary" onclick="startExam('quick')">${t("quick")}</button>
         </div>
-        <div class="card">
-          <div class="eyebrow">${t("blueprint")}</div>
-          <div class="stats-grid mini-grid">
-            <div class="stat">${t("full")}<strong>27</strong><span>${t("questions")}</span></div>
-            <div class="stat">${t("quick")}<strong>17</strong><span>${t("questions")}</span></div>
-            <div class="stat">${t("ability")}<strong>1–5</strong><span>${t("adaptive")}</span></div>
-            <div class="stat">${t("score")}<strong>50–150</strong><span>${t("clamped")}</span></div>
-          </div>
+        <label class="toggle"><input id="untimed" type="checkbox" /> ${t("untimed")}</label>
+      </div>
+      <div class="card">
+        <div class="eyebrow">${t("blueprint")}</div>
+        <div class="stats-grid mini-grid">
+          <div class="stat">${t("full")}<strong>27</strong><span>${t("questions")}</span></div>
+          <div class="stat">${t("quick")}<strong>17</strong><span>${t("questions")}</span></div>
+          <div class="stat">${t("ability")}<strong>1–5</strong><span>${t("adaptive")}</span></div>
+          <div class="stat">${t("score")}<strong>50–150</strong><span>${t("clamped")}</span></div>
         </div>
       </div>
-      <div style="margin-top: var(--sp-7)">${moduleGrid()}</div>
+    </section>
+    ${continueLearningBlock()}
+    <section>
+      <div class="section-head"><h3>${t("modules")}</h3></div>
+      ${moduleGrid()}
     </section>`;
 }
 
@@ -451,6 +427,17 @@ function renderDebugPanel(item) {
   </details>`;
 }
 
+const OPTION_LETTERS = ["A", "B", "C", "D", "E", "F"];
+
+function examRail(item) {
+  return `
+    <div class="exam-rail english-content">
+      <div class="rail-stat"><span>${labelType(item.type)}</span><strong>${t("difficulty")} ${item.difficulty}/5</strong></div>
+      <div class="rail-stat"><span>${t("currentAbility")}</span><strong>${Math.round(state.ability * 10) / 10}</strong></div>
+      ${item.passageTitle ? `<div class="rail-stat"><span>${t("reading")}</span><strong>${item.passageTitle}</strong></div>` : ""}
+    </div>`;
+}
+
 function renderExam() {
   const item = state.items[state.index];
   const plannedTotal = state.session ? state.session.plannedTotal : state.items.length;
@@ -463,24 +450,23 @@ function renderExam() {
         <div id="timerValue" class="exam-timer ${!state.untimed && state.secondsLeft <= 300 ? "time-low" : ""}">${state.untimed ? t("untimedShort") : formatTime(state.secondsLeft)}</div>
       </div>
       <div class="progress"><span style="width:${progress}%"></span></div>
-      <div class="question-meta">
-        <span class="pill">${labelType(item.type)}</span>
-        <span class="pill">${t("difficulty")} ${item.difficulty}/5</span>
-        <span class="pill">${t("currentAbility")} ${Math.round(state.ability * 10) / 10}</span>
-        ${item.passageTitle ? `<span class="pill">${item.passageTitle}</span>` : ""}
-      </div>
-      ${item.passage ? `<div class="passage english-content"><strong>${item.passageTitle}</strong><br><br>${item.passage}</div>` : ""}
-      <div class="question-text english-content">${item.question}</div>
-      <div class="options english-content">
-        ${item.options.map((opt, i) => `<button class="option ${selected === i ? "selected" : ""}" onclick="choose(${i})"><span class="option-letter">${String.fromCharCode(65 + i)}</span><span>${opt}</span></button>`).join("")}
-      </div>
-      ${renderDebugPanel(item)}
-      <div class="nav">
-        <span class="no-back-note">${t("noBack")}</span>
-        <div class="actions" style="margin:0">
-          <button class="secondary" onclick="skipQuestion()">${t("skip")}</button>
-          ${state.index + 1 >= plannedTotal ? `<button onclick="finishExam()">${t("submit")}</button>` : `<button onclick="nextQuestion()">${t("next")}</button>`}
+      <div class="exam-grid">
+        <div class="exam-main">
+          ${item.passage ? `<div class="passage english-content"><strong>${item.passageTitle}</strong><br><br>${item.passage}</div>` : ""}
+          <div class="question-text english-content">${item.question}</div>
+          <div class="options english-content">
+            ${item.options.map((opt, i) => `<button class="option ${selected === i ? "selected" : ""}" onclick="choose(${i})"><span class="option-letter">${OPTION_LETTERS[i] || i + 1}</span><span>${opt}</span></button>`).join("")}
+          </div>
+          ${renderDebugPanel(item)}
+          <div class="nav">
+            <span class="no-back-note">${t("noBack")}</span>
+            <div class="actions" style="margin:0">
+              <button class="secondary" onclick="skipQuestion()">${t("skip")}</button>
+              ${state.index + 1 >= plannedTotal ? `<button onclick="finishExam()">${t("submit")}</button>` : `<button onclick="nextQuestion()">${t("next")}</button>`}
+            </div>
+          </div>
         </div>
+        ${examRail(item)}
       </div>
     </section>`;
 }
@@ -666,40 +652,11 @@ function placementBlock(result) {
     </div>`;
 }
 
-// Reads already-computed byType accuracy to surface the weakest and
-// strongest area, plus the already-computed average pace. No scoring
-// or adaptive logic here — purely a presentational summary.
-function recommendationsBlock(byType) {
-  const entries = Object.entries(byType)
-    .filter(([, d]) => d.total > 0)
-    .map(([type, d]) => ({ type, acc: percent(d.correct, d.total) }));
-  if (!entries.length) return "";
-  entries.sort((a, b) => a.acc - b.acc);
-  const weakest = entries[0];
-  const strongest = entries[entries.length - 1];
-  const t1 = computeTimeAnalysis();
-
-  const rows = [];
-  rows.push(`<div class="recommend-row"><span class="recommend-icon">↑</span><div>${t("recWeak")} <strong>${labelType(weakest.type)}</strong> (${weakest.acc}%) ${t("recWeakTail")}</div></div>`);
-  if (strongest.type !== weakest.type) {
-    rows.push(`<div class="recommend-row"><span class="recommend-icon">✓</span><div>${t("recStrong")} <strong>${labelType(strongest.type)}</strong> (${strongest.acc}%) — ${t("recStrongTail")}</div></div>`);
-  }
-  if (t1) {
-    rows.push(`<div class="recommend-row"><span class="recommend-icon">⏱</span><div>${t("recPace")} ${formatTime(Math.floor(t1.avgMs / 1000))} ${t("recPaceTail")}</div></div>`);
-  }
-  return `<h3>${t("recommendations")}</h3><div class="recommend-list">${rows.join("")}</div>`;
+function showResultTab(name) {
+  document.querySelectorAll(".result-tab").forEach(el => el.classList.toggle("active", el.dataset.tab === name));
+  document.querySelectorAll(".result-panel").forEach(el => el.classList.toggle("active", el.dataset.panel === name));
 }
-
-function nextStepBlock() {
-  return `
-    <div class="next-step">
-      <p class="muted-note">${t("nextStepNote")}</p>
-      <div class="actions" style="margin:0">
-        <button class="secondary" onclick="renderHome()">${t("backHome")}</button>
-        <button onclick="startExam('quick')">${t("practiceAgain")}</button>
-      </div>
-    </div>`;
-}
+window.showResultTab = showResultTab;
 
 function renderResults(result) {
   const byType = state.items.reduce((acc, item, i) => {
@@ -725,49 +682,56 @@ function renderResults(result) {
         <div class="stat">${t("accuracy")}<strong>${result.accuracy}%</strong></div>
         <div class="stat">${t("confidence")}<strong>${result.confidence}</strong></div>
       </div>
-
       ${placementBlock(result)}
 
-      <div class="stats-grid">
-        <div class="stat">${t("answered")}<strong>${result.answered}</strong></div>
-        <div class="stat">${t("unanswered")}<strong>${result.unanswered}</strong></div>
-        <div class="stat">${t("weighted")}<strong>${result.weightedAccuracy || 0}%</strong></div>
-        <div class="stat">${t("finalAbility")}<strong>${result.finalAbility || 0}</strong></div>
-      </div>
-      <p class="muted-note">${t("estimateNote")}</p>
-      <p class="muted-note">${t("scoreExplain")}</p>
-
-      ${timeAnalysisBlock()}
-
-      <h3>${t("byType")}</h3>
-      <div class="review metric-list">
-        ${Object.entries(byType).map(([type, data]) => progressRow(labelType(type), data.correct, data.total)).join("")}
-      </div>
-      <h3>${t("byDifficulty")}</h3>
-      <div class="review metric-list">
-        ${Object.entries(byDifficulty).sort(([a],[b]) => Number(a) - Number(b)).map(([diff, data]) => progressRow(`${t("difficulty")} ${diff}`, data.correct, data.total)).join("")}
-      </div>
-      <h3>${t("abilityPath")}</h3>
-      <div class="ability-path">${abilityPath()}</div>
-
-      ${recommendationsBlock(byType)}
-
-      <h3>${t("review")}</h3>
-      <div class="review">
-        ${state.items.map((item, i) => {
-          const user = state.answers[i];
-          const ok = user === item.answer;
-          return `<div class="review-item">
-            <div><strong>Q${i+1} · ${labelType(item.type)} · ${t("difficulty")} ${item.difficulty}</strong> <span class="${ok ? 'good' : 'bad'}">${ok ? t("correct") : t("incorrect")}</span></div>
-            <div class="english-content review-question">${item.question}</div>
-            <div style="color:var(--ink-soft);margin-top:6px">${t("yourAnswer")}: ${user === null || user === undefined ? t("unansweredText") : item.options[user]}</div>
-            <div style="color:var(--ink-soft)">${t("correctAnswer")}: ${item.options[item.answer]}</div>
-            <div style="margin-top:6px">${item.explanation}</div>
-          </div>`;
-        }).join("")}
+      <div class="result-tabs">
+        <button class="result-tab active" data-tab="overview" onclick="showResultTab('overview')">${t("tabOverview")}</button>
+        <button class="result-tab" data-tab="breakdown" onclick="showResultTab('breakdown')">${t("tabBreakdown")}</button>
+        <button class="result-tab" data-tab="review" onclick="showResultTab('review')">${t("tabReview")}</button>
       </div>
 
-      ${nextStepBlock()}
+      <div class="result-panel active" data-panel="overview">
+        <div class="stats-grid">
+          <div class="stat">${t("answered")}<strong>${result.answered}</strong></div>
+          <div class="stat">${t("unanswered")}<strong>${result.unanswered}</strong></div>
+          <div class="stat">${t("weighted")}<strong>${result.weightedAccuracy || 0}%</strong></div>
+          <div class="stat">${t("finalAbility")}<strong>${result.finalAbility || 0}</strong></div>
+        </div>
+        <p class="muted-note">${t("estimateNote")}</p>
+        <p class="muted-note">${t("scoreExplain")}</p>
+      </div>
+
+      <div class="result-panel" data-panel="breakdown">
+        <h3>${t("byType")}</h3>
+        <div class="review metric-list">
+          ${Object.entries(byType).map(([type, data]) => progressRow(labelType(type), data.correct, data.total)).join("")}
+        </div>
+        <h3>${t("byDifficulty")}</h3>
+        <div class="review metric-list">
+          ${Object.entries(byDifficulty).sort(([a],[b]) => Number(a) - Number(b)).map(([diff, data]) => progressRow(`${t("difficulty")} ${diff}`, data.correct, data.total)).join("")}
+        </div>
+        <h3>${t("abilityPath")}</h3>
+        <div class="ability-path">${abilityPath()}</div>
+        ${timeAnalysisBlock()}
+      </div>
+
+      <div class="result-panel" data-panel="review">
+        <div class="review">
+          ${state.items.map((item, i) => {
+            const user = state.answers[i];
+            const ok = user === item.answer;
+            return `<div class="review-item">
+              <div><strong>Q${i+1} · ${labelType(item.type)} · ${t("difficulty")} ${item.difficulty}</strong> <span class="${ok ? 'good' : 'bad'}">${ok ? t("correct") : t("incorrect")}</span></div>
+              <div class="english-content review-question">${item.question}</div>
+              <div style="color:var(--ink-soft);margin-top:6px">${t("yourAnswer")}: ${user === null || user === undefined ? t("unansweredText") : item.options[user]}</div>
+              <div style="color:var(--ink-soft)">${t("correctAnswer")}: ${item.options[item.answer]}</div>
+              <div style="margin-top:6px">${item.explanation}</div>
+            </div>`;
+          }).join("")}
+        </div>
+      </div>
+
+      <div class="actions"><button onclick="renderHome()">${t("backHome")}</button><button class="secondary" onclick="startExam('quick')">${t("practiceAgain")}</button></div>
     </section>`;
 }
 
